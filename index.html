@@ -213,7 +213,17 @@
             <div onclick="closeProductDetail()" class="back-arrow">
                 <i class="fas fa-chevron-right text-gray-800 text-sm"></i>
             </div>
-            
+            <div class="mb-6 text-right">
+    <label class="block text-sm font-bold mb-2 text-gray-700">اختر المقاس:</label>
+    <select id="sizeSelect" class="w-full border border-gray-200 p-3 rounded-xl bg-gray-50 outline-none focus:border-orange-600 transition">
+        <option value="50">مقاس 50</option>
+        <option value="52">مقاس 52</option>
+        <option value="54">مقاس 54</option>
+        <option value="56">مقاس 56</option>
+        <option value="58">مقاس 58</option>
+        <option value="60">مقاس 60</option>
+    </select>
+</div>
             <div class="image-slider" id="modalSlider"></div>
 
             <div class="p-6 text-right">
@@ -295,20 +305,22 @@
             renderCart();
         }
 
-        function openProductDetail(name, price, images) {
-            const modal = document.getElementById('productDetailModal');
-            document.getElementById('modalSlider').innerHTML = images.map(img => `<img src="${img}" onerror="this.src='https://via.placeholder.com/400x600'">`).join('');
-            document.getElementById('modalTitle').innerText = name;
-            document.getElementById('modalPrice').innerText = price + " ريال";
-            
-            modal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
+function openProductDetail(name, price, images) {
+    const modal = document.getElementById('productDetailModal');
+    // ... الكود القديم لوضع الصور والعنوان ...
 
-            document.getElementById('modalAddBtn').onclick = function() {
-                addToCart(name, price);
-                closeProductDetail();
-            };
-        }
+    document.getElementById('modalAddBtn').onclick = function() {
+        // سحب المقاس المختار
+        const selectedSize = document.getElementById('sizeSelect').value;
+        // دمج الاسم مع المقاس بين قوسين
+        const fullNameWithSize = `${name} (مقاس ${selectedSize})`;
+        
+        addToCart(fullNameWithSize, price);
+        closeProductDetail();
+    };
+    
+    modal.style.display = 'block';
+}
 
         function closeProductDetail() {
             document.getElementById('productDetailModal').style.display = 'none';
@@ -316,14 +328,44 @@
         }
 
         function sendOrder() {
-            if (cart.length === 0) return alert("السلة فارغة!");
-            const name = prompt("الاسم الكريم:");
-            if (!name) return;
-            let msg = `طلب جديد من متجر غمرة%0Aالاسم: ${name}%0A%0Aالمنتجات:%0A`;
-            cart.forEach(i => msg += `- ${i.name} (${i.qty})%0A`);
-            msg += `%0Aالإجمالي: ${total} ريال`;
-            window.open(`https://wa.me/966536560250?text=${msg}`);
-        }
+    if (cart.length === 0) return alert("السلة فارغة!");
+    
+    const customerName = prompt("الاسم الكريم:");
+    if (!customerName) return;
+
+    // تجهيز البيانات لإرسالها لقوقل شيت
+    const orderData = {
+        name: customerName,
+        total: total,
+        items: cart.map(i => i.name).join(" | "), // بيطلع الاسم والمقاس اللي دمجناهم
+        date: new Date().toLocaleString('ar-SA')
+    };
+
+    // الرابط الخاص بكِ الذي أرسلتيه
+    const scriptURL = "https://script.google.com/macros/s/AKfycbzTSBQF8jPDvQ7c0LF7VeN_ruW0WkHsBvqsr4JA71odbgVHQepuLmgq-tSoeiOWjGFf/exec";
+
+    // إرسال البيانات إلى قوقل شيت
+    fetch(scriptURL, {
+        method: 'POST',
+        mode: 'no-cors', 
+        cache: 'no-cache',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData)
+    })
+    .then(() => {
+        // بعد الإرسال للشيت، نفتح الواتساب للعميلة لتأكيد الطلب
+        let msg = `طلب جديد من متجر غمرة%0Aالاسم: ${customerName}%0Aالطلبات:%0A${orderData.items}%0Aالإجمالي: ${total} ريال`;
+        window.open(`https://wa.me/966536560250?text=${msg}`);
+        
+        document.getElementById('successModal').style.display = 'block';
+        cart = []; 
+        updateUI();
+    })
+    .catch(error => {
+        console.error('خطأ!', error);
+        alert("حدث خطأ أثناء إرسال الطلب، يرجى المحاولة مرة أخرى.");
+    });
+}
     </script>
 </body>
 </html>
