@@ -130,6 +130,9 @@
     let cart = [];
     let total = 0;
 
+    // الرابط الجديد الخاص بكِ لربط الأعمدة العشرة
+    const scriptURL = "https://script.google.com/macros/s/AKfycbyN8TNyaDI1tGwMi8jYYhRp8aqX2wboLPHNqbRU7sxA5-quj3vUmyfQ22GNVi8BTT85/exec";
+
     // فتح وإغلاق السلة
     function toggleCartDrawer() {
         const drawer = document.getElementById('cartDrawer');
@@ -137,7 +140,7 @@
         renderCart();
     }
 
-    // إضافة منتج للسلة
+    // إضافة منتج للسلة مع الصورة والمقاس
     function addToCart(name, price, image, size) {
         const item = cart.find(i => i.name === name && i.size === size);
         if (item) {
@@ -148,7 +151,7 @@
         updateUI();
     }
 
-    // تحديث الأرقام في الواجهة
+    // تحديث الأرقام (العدد الكلي والسعر)
     function updateUI() {
         total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
         document.getElementById('total-price').innerText = total;
@@ -156,7 +159,7 @@
         document.getElementById('cartCount').innerText = cart.reduce((sum, i) => sum + i.qty, 0);
     }
 
-    // عرض عناصر السلة مع الصور والمقاسات
+    // عرض عناصر السلة بشكل احترافي
     function renderCart() {
         const list = document.getElementById('cartItemsList');
         if (cart.length === 0) {
@@ -180,7 +183,7 @@
         `).join('');
     }
 
-    // تغيير الكمية
+    // تعديل الكميات داخل السلة
     function changeQty(idx, delta) {
         cart[idx].qty += delta;
         if (cart[idx].qty <= 0) cart.splice(idx, 1);
@@ -188,7 +191,7 @@
         renderCart();
     }
 
-    // فتح تفاصيل المنتج (المودال)
+    // فتح نافذة تفاصيل المنتج
     function openProductDetail(name, price, images) {
         const modal = document.getElementById('productDetailModal');
         document.getElementById('modalTitle').innerText = name;
@@ -206,43 +209,54 @@
         document.body.style.overflow = 'hidden';
     }
 
-    // إغلاق المودال
+    // إغلاق نافذة التفاصيل
     function closeProductDetail() {
         document.getElementById('productDetailModal').style.display = 'none';
         document.body.style.overflow = 'auto';
     }
 
-    // إرسال الطلب للإيميل (عبر قوقل شيت)
+    // إرسال الطلب النهائي لقوقل شيت (تعبئة الأعمدة العشرة)
     function sendOrder() {
         if (cart.length === 0) return alert("السلة فارغة!");
         
+        // جمع بيانات العميلة
         const customerName = prompt("الاسم الكريم:");
         if (!customerName) return;
-
-        const scriptURL = "https://script.google.com/macros/s/AKfycbzTSBQF8jPDvQ7c0LF7VeN_ruW0WkHsBvqsr4JA71odbgVHQepuLmgq-tSoeiOWjGFf/exec";
         
-        // تجهيز بيانات الطلب
+        const customerPhone = prompt("رقم الجوال:");
+        if (!customerPhone) return alert("يرجى إدخال رقم الجوال لإتمام الطلب");
+        
+        const customerLoc = prompt("موقع التوصيل (المدينة والحي):");
+        const customerNotes = prompt("هل لديكِ أي ملاحظات إضافية؟") || "لا يوجد";
+
+        // تجهيز نص الطلبات
         const itemsText = cart.map(i => `- ${i.name} (مقاس: ${i.size}) العدد: ${i.qty}`).join("\n");
+        
+        // بناء الكائن الذي سيتم إرساله للشيت
         const orderData = {
             name: customerName,
+            phone: customerPhone,
+            location: customerLoc,
             items: itemsText,
-            total: total
+            total: total,
+            notes: customerNotes
         };
 
-        // إرسال "صامت" لقوقل شيت (الذي يرسل إيميل)
+        // عملية الإرسال
         fetch(scriptURL, {
             method: 'POST',
             mode: 'no-cors',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(orderData)
         }).then(() => {
-            alert("تم إرسال طلبك بنجاح! ستصلنا تفاصيلك وسنتواصل معكِ قريباً.");
+            alert("شكراً لكِ يا " + customerName + "!\nتم إرسال طلبك بنجاح وسنتواصل معكِ قريباً لتأكيده.");
+            // تصفير السلة بعد النجاح
             cart = [];
             updateUI();
             if(document.getElementById('cartDrawer').style.display === 'flex') toggleCartDrawer();
         }).catch(err => {
             console.error("Error:", err);
-            alert("حدث خطأ بسيط، لكن لا تقلقي، جربي مرة أخرى.");
+            alert("حدث خطأ أثناء الإرسال، يرجى المحاولة مرة أخرى.");
         });
     }
 </script>
