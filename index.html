@@ -307,21 +307,29 @@
 
 function openProductDetail(name, price, images) {
     const modal = document.getElementById('productDetailModal');
-    // ... الكود القديم لوضع الصور والعنوان ...
-
+    
+    // 1. وضع اسم العباية في العنوان
+    document.getElementById('modalTitle').innerText = name;
+    
+    // 2. وضع السعر
+    document.getElementById('modalPrice').innerText = price + " ريال";
+    
+    // 3. عرض الصور في السلايدر (هذا الجزء اللي كان ناقص عندك)
+    const slider = document.getElementById('modalSlider');
+    slider.innerHTML = images.map(img => `<img src="${img}" class="w-full h-auto object-cover">`).join('');
+    
+    // 4. برمجة زر الإضافة لدمج الاسم مع المقاس المختار
     document.getElementById('modalAddBtn').onclick = function() {
-        // سحب المقاس المختار
         const selectedSize = document.getElementById('sizeSelect').value;
-        // دمج الاسم مع المقاس بين قوسين
         const fullNameWithSize = `${name} (مقاس ${selectedSize})`;
-        
         addToCart(fullNameWithSize, price);
         closeProductDetail();
     };
     
+    // إظهار النافذة ومنع السكرول في الخلفية
     modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
 }
-
         function closeProductDetail() {
             document.getElementById('productDetailModal').style.display = 'none';
             document.body.style.overflow = 'auto';
