@@ -41,7 +41,7 @@
     </div>
 
     <main class="max-w-md mx-auto" id="products">
-        <h2 class="category-title">عبايات سوداء 8كلاسيك</h2>
+        <h2 class="category-title">عبايات سوداء كلاسيك</h2>
         <div class="product-grid">
             <div class="product-card" onclick="openProductDetail('عباية سوداء فاخرة', 250, ['5.png', '6.png'])">
                 <img src="5.png" class="product-img">
@@ -206,19 +206,38 @@
             document.body.style.overflow = 'auto';
         }
 
-        function sendOrder() {
-            if (cart.length === 0) return alert("السلة فارغة!");
-            const customerName = prompt("الاسم الكريم:");
-            if (!customerName) return;
+      function sendOrder() {
+    if (cart.length === 0) return alert("السلة فارغة!");
+    
+    const customerName = prompt("الاسم الكريم:");
+    if (!customerName) return;
 
-            const scriptURL = "https://script.google.com/macros/s/AKfycbzTSBQF8jPDvQ7c0LF7VeN_ruW0WkHsBvqsr4JA71odbgVHQepuLmgq-tSoeiOWjGFf/exec";
-            const itemsText = cart.map(i => `- ${i.name} (مقاس: ${i.size}) العدد: ${i.qty}`).join("\n");
-            
-            const orderData = {
-                name: customerName,
-                items: itemsText,
-                total: total
-            };
+    // تجهيز البيانات
+    const itemsText = cart.map(i => `- ${i.name} (مقاس: ${i.size}) العدد: ${i.qty}`).join("\n");
+    const orderData = {
+        name: customerName,
+        items: itemsText,
+        total: total
+    };
+
+    const scriptURL = "https://script.google.com/macros/s/AKfycbzTSBQF8jPDvQ7c0LF7VeN_ruW0WkHsBvqsr4JA71odbgVHQepuLmgq-tSoeiOWjGFf/exec";
+
+    // إرسال البيانات (ستذهب للشيت ومنها لإيميلك تلقائياً)
+    fetch(scriptURL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData)
+    }).then(() => {
+        alert("تم استلام طلبك بنجاح، شكراً لتسوقك من غمرة!");
+        cart = [];
+        updateUI();
+        if(document.getElementById('cartDrawer').style.display === 'flex') toggleCartDrawer();
+    }).catch(err => {
+        alert("عذراً، حدث خطأ. يرجى المحاولة مرة أخرى.");
+        console.error(err);
+    });
+}
 
             fetch(scriptURL, {
                 method: 'POST',
