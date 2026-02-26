@@ -122,135 +122,129 @@
             <span class="text-black text-xl font-bold"><span id="total-price">0</span> ريال</span>
         </div>
         <button onclick="sendOrder()" class="w-full bg-black text-white py-4 rounded-xl font-bold flex justify-center items-center gap-2">
-            <span>إتمام الطلب عبر واتساب</span>
+            <span>إتمام الطلب</span>
             <i class="fab fa-whatsapp"></i>
         </button>
     </div>
+<script>
+    let cart = [];
+    let total = 0;
 
-    <script>
-        let cart = [];
-        let total = 0;
+    // فتح وإغلاق السلة
+    function toggleCartDrawer() {
+        const drawer = document.getElementById('cartDrawer');
+        drawer.style.display = (drawer.style.display === 'flex') ? 'none' : 'flex';
+        renderCart();
+    }
 
-        function toggleCartDrawer() {
-            const drawer = document.getElementById('cartDrawer');
-            drawer.style.display = (drawer.style.display === 'flex') ? 'none' : 'flex';
-            renderCart();
+    // إضافة منتج للسلة
+    function addToCart(name, price, image, size) {
+        const item = cart.find(i => i.name === name && i.size === size);
+        if (item) {
+            item.qty++;
+        } else {
+            cart.push({ name, price, image, size, qty: 1 });
         }
-
-        function addToCart(name, price, image, size) {
-            const item = cart.find(i => i.name === name && i.size === size);
-            if (item) {
-                item.qty++;
-            } else {
-                cart.push({ name, price, image, size, qty: 1 });
-            }
-            updateUI();
-        }
-
-        function updateUI() {
-            total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
-            document.getElementById('total-price').innerText = total;
-            document.getElementById('inner-total').innerText = total;
-            document.getElementById('cartCount').innerText = cart.reduce((sum, i) => sum + i.qty, 0);
-        }
-
-        function renderCart() {
-            const list = document.getElementById('cartItemsList');
-            if (cart.length === 0) {
-                list.innerHTML = '<p class="text-center text-gray-400 py-10">سلة التسوق فارغة</p>';
-                return;
-            }
-            list.innerHTML = cart.map((item, idx) => `
-                <div class="flex items-center gap-4 mb-4 border-b pb-4">
-                    <img src="${item.image}" class="w-16 h-20 object-cover rounded-lg shadow-sm">
-                    <div class="flex-1 text-right">
-                        <div class="font-bold text-gray-800 text-sm">${item.name}</div>
-                        <div class="text-gray-500 text-xs mt-1">المقاس: ${item.size}</div>
-                        <div class="text-orange-600 font-bold text-sm mt-1">${item.price} ريال</div>
-                    </div>
-                    <div class="flex flex-col items-center gap-2 bg-gray-50 rounded-xl px-2 py-1 border">
-                        <button onclick="changeQty(${idx}, 1)" class="text-orange-600"><i class="fas fa-plus-circle text-sm"></i></button>
-                        <span class="font-bold text-sm">${item.qty}</span>
-                        <button onclick="changeQty(${idx}, -1)" class="text-gray-400"><i class="fas fa-minus-circle text-sm"></i></button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function changeQty(idx, delta) {
-            cart[idx].qty += delta;
-            if (cart[idx].qty <= 0) cart.splice(idx, 1);
-            updateUI();
-            renderCart();
-        }
-
-        function openProductDetail(name, price, images) {
-            const modal = document.getElementById('productDetailModal');
-            document.getElementById('modalTitle').innerText = name;
-            document.getElementById('modalPrice').innerText = price + " ريال";
-            const slider = document.getElementById('modalSlider');
-            slider.innerHTML = images.map(img => `<img src="${img}" class="w-full">`).join('');
-            
-            document.getElementById('modalAddBtn').onclick = function() {
-                const size = document.getElementById('sizeSelect').value;
-                addToCart(name, price, images[0], size);
-                closeProductDetail();
-                toggleCartDrawer();
-            };
-            modal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeProductDetail() {
-            document.getElementById('productDetailModal').style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
-
-      function sendOrder() {
-    if (cart.length === 0) return alert("السلة فارغة!");
-    
-    const customerName = prompt("الاسم الكريم:");
-    if (!customerName) return;
-
-    // تجهيز البيانات
-    const itemsText = cart.map(i => `- ${i.name} (مقاس: ${i.size}) العدد: ${i.qty}`).join("\n");
-    const orderData = {
-        name: customerName,
-        items: itemsText,
-        total: total
-    };
-
-    const scriptURL = "https://script.google.com/macros/s/AKfycbzTSBQF8jPDvQ7c0LF7VeN_ruW0WkHsBvqsr4JA71odbgVHQepuLmgq-tSoeiOWjGFf/exec";
-
-    // إرسال البيانات (ستذهب للشيت ومنها لإيميلك تلقائياً)
-    fetch(scriptURL, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderData)
-    }).then(() => {
-        alert("تم استلام طلبك بنجاح، شكراً لتسوقك من غمرة!");
-        cart = [];
         updateUI();
-        if(document.getElementById('cartDrawer').style.display === 'flex') toggleCartDrawer();
-    }).catch(err => {
-        alert("عذراً، حدث خطأ. يرجى المحاولة مرة أخرى.");
-        console.error(err);
-    });
-}
+    }
 
-            fetch(scriptURL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(orderData)
-            }).then(() => {
-                let msg = `طلب جديد من متجر غمرة%0Aالاسم: ${customerName}%0Aالطلبات:%0A${itemsText.replace(/\n/g, '%0A')}%0Aالإجمالي: ${total} ريال`;
-                window.open(`https://wa.me/966502743396?text=${msg}`);
-                cart = [];
-                updateUI();
-            });
+    // تحديث الأرقام في الواجهة
+    function updateUI() {
+        total = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+        document.getElementById('total-price').innerText = total;
+        document.getElementById('inner-total').innerText = total;
+        document.getElementById('cartCount').innerText = cart.reduce((sum, i) => sum + i.qty, 0);
+    }
+
+    // عرض عناصر السلة مع الصور والمقاسات
+    function renderCart() {
+        const list = document.getElementById('cartItemsList');
+        if (cart.length === 0) {
+            list.innerHTML = '<p class="text-center text-gray-400 py-10">سلة التسوق فارغة</p>';
+            return;
         }
-    </script>
+        list.innerHTML = cart.map((item, idx) => `
+            <div class="flex items-center gap-4 mb-4 border-b pb-4">
+                <img src="${item.image}" class="w-16 h-20 object-cover rounded-lg shadow-sm">
+                <div class="flex-1 text-right">
+                    <div class="font-bold text-gray-800 text-sm">${item.name}</div>
+                    <div class="text-gray-500 text-[10px] mt-1">المقاس: ${item.size}</div>
+                    <div class="text-orange-600 font-bold text-sm mt-1">${item.price} ريال</div>
+                </div>
+                <div class="flex flex-col items-center gap-2 bg-gray-50 rounded-xl px-2 py-1 border">
+                    <button onclick="changeQty(${idx}, 1)" class="text-orange-600"><i class="fas fa-plus-circle text-sm"></i></button>
+                    <span class="font-bold text-sm">${item.qty}</span>
+                    <button onclick="changeQty(${idx}, -1)" class="text-gray-400"><i class="fas fa-minus-circle text-sm"></i></button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // تغيير الكمية
+    function changeQty(idx, delta) {
+        cart[idx].qty += delta;
+        if (cart[idx].qty <= 0) cart.splice(idx, 1);
+        updateUI();
+        renderCart();
+    }
+
+    // فتح تفاصيل المنتج (المودال)
+    function openProductDetail(name, price, images) {
+        const modal = document.getElementById('productDetailModal');
+        document.getElementById('modalTitle').innerText = name;
+        document.getElementById('modalPrice').innerText = price + " ريال";
+        const slider = document.getElementById('modalSlider');
+        slider.innerHTML = images.map(img => `<img src="${img}" class="w-full">`).join('');
+        
+        document.getElementById('modalAddBtn').onclick = function() {
+            const size = document.getElementById('sizeSelect').value;
+            addToCart(name, price, images[0], size);
+            closeProductDetail();
+            toggleCartDrawer();
+        };
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+
+    // إغلاق المودال
+    function closeProductDetail() {
+        document.getElementById('productDetailModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    // إرسال الطلب للإيميل (عبر قوقل شيت)
+    function sendOrder() {
+        if (cart.length === 0) return alert("السلة فارغة!");
+        
+        const customerName = prompt("الاسم الكريم:");
+        if (!customerName) return;
+
+        const scriptURL = "https://script.google.com/macros/s/AKfycbzTSBQF8jPDvQ7c0LF7VeN_ruW0WkHsBvqsr4JA71odbgVHQepuLmgq-tSoeiOWjGFf/exec";
+        
+        // تجهيز بيانات الطلب
+        const itemsText = cart.map(i => `- ${i.name} (مقاس: ${i.size}) العدد: ${i.qty}`).join("\n");
+        const orderData = {
+            name: customerName,
+            items: itemsText,
+            total: total
+        };
+
+        // إرسال "صامت" لقوقل شيت (الذي يرسل إيميل)
+        fetch(scriptURL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(orderData)
+        }).then(() => {
+            alert("تم إرسال طلبك بنجاح! ستصلنا تفاصيلك وسنتواصل معكِ قريباً.");
+            cart = [];
+            updateUI();
+            if(document.getElementById('cartDrawer').style.display === 'flex') toggleCartDrawer();
+        }).catch(err => {
+            console.error("Error:", err);
+            alert("حدث خطأ بسيط، لكن لا تقلقي، جربي مرة أخرى.");
+        });
+    }
+</script>
 </body>
 </html>
