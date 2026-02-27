@@ -149,6 +149,7 @@
     let cart = [];
     let total = 0;
 
+    // تأكدي يا أميرة إن هذا الرابط هو الرابط الأخير اللي أخذتيه من Apps Script
     const scriptURL = "https://script.google.com/macros/s/AKfycbz6FHgsHOrl4NjYwiuhskfdMyYMoO-FKcNWmelLLuy9FaazeLz0OtOOkO0oJ33RwEzO/exec";
 
     function toggleCartDrawer() {
@@ -229,81 +230,114 @@
         document.body.style.overflow = 'auto';
     }
 
+    // --- الدالة المعدلة يا أميرة لإتمام الطلب ---
     async function sendOrder() {
         if (cart.length === 0) return alert("السلة فارغة يا أميرة!");
 
-        const customerName = prompt("الاسم الكريم:");
-        if (!customerName) return;
+        // إنشاء نافذة اختيار طريقة الدفع
+        const paymentHtml = `
+            <div id="paymentModal" style="position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px; font-family:'Tajawal',sans-serif;">
+                <div style="background:white; padding:25px; border-radius:25px; width:100%; max-width:400px; text-align:right; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
+                    <h3 style="font-weight:bold; font-size:18px; margin-bottom:20px; color:#333;">اختاري طريقة الدفع</h3>
+                    
+                    <label style="display:flex; align-items:center; gap:12px; cursor:pointer; margin-bottom:15px; padding:15px; border:2px solid #eee; border-radius:15px; transition:0.3s;" id="labelTransfer">
+                        <input type="radio" name="payMethod" value="transfer" style="accent-color:black; transform:scale(1.2);" 
+                            onclick="document.getElementById('bankInfo').style.display='block'; document.getElementById('codInfo').style.display='none'; window.selectedPay='تحويل بنكي'; window.shipping=15; document.getElementById('labelTransfer').style.borderColor='black'; document.getElementById('labelCod').style.borderColor='#eee';">
+                        <div>
+                            <span style="font-weight:bold; display:block; font-size:14px;">تحويل بنكي</span>
+                            <small style="color:#059669; font-weight:bold;">خصم 50% على التوصيل (15 ريال)</small>
+                        </div>
+                    </label>
 
-        let customerPhone = prompt("رقم الجوال (05XXXXXXXX):");
-        if (!customerPhone || !/^05\d{8}$/.test(customerPhone)) {
-            alert("خطأ في رقم الجوال، يرجى التأكد من البدء بـ 05 ومن ثم 8 أرقام.");
-            return;
-        }
+                    <label style="display:flex; align-items:center; gap:12px; cursor:pointer; margin-bottom:15px; padding:15px; border:2px solid #eee; border-radius:15px; transition:0.3s;" id="labelCod">
+                        <input type="radio" name="payMethod" value="cod" style="accent-color:black; transform:scale(1.2);" 
+                            onclick="document.getElementById('bankInfo').style.display='none'; document.getElementById('codInfo').style.display='block'; window.selectedPay='الدفع عند الاستلام'; window.shipping=30; document.getElementById('labelCod').style.borderColor='black'; document.getElementById('labelTransfer').style.borderColor='#eee';">
+                        <div>
+                            <span style="font-weight:bold; display:block; font-size:14px;">الدفع عند الاستلام</span>
+                            <small style="color:#666;">سعر التوصيل (30 ريال)</small>
+                        </div>
+                    </label>
 
-        // --- إضافة خيار طريقة الدفع ---
-        const paymentMethod = prompt("اختر طريقة الدفع:\n1 - تحويل بنكي\n2 - الدفع عند الاستلام");
-        let payStatus = "";
-        
-        if (paymentMethod === "1") {
-            payStatus = "تحويل بنكي";
-            alert("بيانات التحويل البنكي:\n\nمصرف الراجحي\nالأيبان: SA0000000000000000000000\nباسم: أميرة محمد\n\nيرجى تحويل المبلغ وتصوير الشاشة.");
-        } else if (paymentMethod === "2") {
-            payStatus = "الدفع عند الاستلام";
-        } else {
-            alert("يرجى اختيار طريقة الدفع بشكل صحيح.");
-            return;
-        }
+                    <div id="bankInfo" style="display:none; background:#f0f9ff; padding:15px; border-radius:12px; font-size:13px; margin-bottom:15px; border:1px solid #bae6fd; color:#0369a1;">
+                        <p><b>🏦 مصرف الراجحي</b></p>
+                        <p>الأيبان: SA0000000000000000000000</p>
+                        <p>باسم: أميرة محمد</p>
+                        <hr style="margin:10px 0; border-color:#bae6fd;">
+                        <p style="font-weight:bold;">المطلوب تحويله: ${total + 15} ريال</p>
+                    </div>
 
-        let googleMapsLink = "لم يتم مشاركة الموقع";
-        if (confirm("هل تسمحين بمشاركة موقعك (GPS) لتسهيل التوصيل؟")) {
-            try {
-                const pos = await new Promise((res, rej) => {
-                    navigator.geolocation.getCurrentPosition(res, rej, { 
-                        timeout: 8000, 
-                        enableHighAccuracy: true 
-                    });
-                });
-                googleMapsLink = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-            } catch (err) { 
-                alert("تعذر الحصول على الموقع، سيتم الإرسال بدونه."); 
+                    <div id="codInfo" style="display:none; background:#fff7ed; padding:15px; border-radius:12px; font-size:13px; margin-bottom:15px; border:1px solid #fed7aa; color:#9a3412;">
+                        <p>سيتم دفع المبلغ عند الباب</p>
+                        <p style="font-weight:bold;">الإجمالي شامل التوصيل: ${total + 30} ريال</p>
+                    </div>
+
+                    <div style="display:flex; gap:10px;">
+                        <button id="confirmPayBtn" style="flex:2; background:black; color:white; padding:14px; border-radius:12px; font-weight:bold; border:none; cursor:pointer;">تأكيد الطلب</button>
+                        <button onclick="document.getElementById('paymentModal').remove()" style="flex:1; background:#f3f4f6; color:#666; padding:14px; border-radius:12px; font-weight:bold; border:none; cursor:pointer;">إلغاء</button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        document.body.insertAdjacentHTML('beforeend', paymentHtml);
+
+        // معالج زر التأكيد
+        document.getElementById('confirmPayBtn').onclick = async function() {
+            if (!window.selectedPay) return alert("يرجى اختيار طريقة الدفع يا أميرة");
+            
+            const payMethod = window.selectedPay;
+            const finalShipping = window.shipping;
+            document.getElementById('paymentModal').remove();
+
+            const customerName = prompt("الاسم الكريم:");
+            if (!customerName) return;
+
+            let customerPhone = prompt("رقم الجوال (05XXXXXXXX):");
+            if (!customerPhone || !/^05\d{8}$/.test(customerPhone)) {
+                alert("يرجى التأكد من رقم الجوال.");
+                return;
             }
-        }
 
-        const customerLoc = prompt("موقع التوصيل (المدينة والحي):") || "غير محدد";
-        const generalNotes = prompt("هل لديكِ أي ملاحظات إضافية عامة للطلب؟") || "لا يوجد";
+            let googleMapsLink = "لم يتم مشاركة الموقع";
+            if (confirm("هل تسمحين بمشاركة موقعك (GPS)؟")) {
+                try {
+                    const pos = await new Promise((res, rej) => {
+                        navigator.geolocation.getCurrentPosition(res, rej, { timeout: 8000 });
+                    });
+                    googleMapsLink = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
+                } catch (err) { alert("تعذر الحصول على الموقع."); }
+            }
 
-        const itemsText = cart.map(i => {
-            let line = `- ${i.name} (مقاس: ${i.size}) العدد: ${i.qty}`;
-            if (i.note) line += ` [تعديل: ${i.note}]`;
-            return line;
-        }).join("\n");
+            const customerLoc = prompt("موقع التوصيل (المدينة والحي):") || "غير محدد";
+            const generalNotes = prompt("ملاحظات إضافية؟") || "لا يوجد";
 
-        const orderData = {
-            name: customerName,
-            phone: customerPhone,
-            location: customerLoc,
-            gps: googleMapsLink,
-            items: itemsText,
-            total: total,
-            notes: generalNotes,
-            payment: payStatus // إرسال حالة الدفع المختارة
+            const itemsText = cart.map(i => `- ${i.name} (مقاس: ${i.size}) العدد: ${i.qty}${i.note ? ` [تعديل: ${i.note}]` : ''}`).join("\n");
+
+            const orderData = {
+                name: customerName,
+                phone: customerPhone,
+                location: customerLoc,
+                gps: googleMapsLink,
+                items: itemsText,
+                total: total + finalShipping,
+                notes: generalNotes,
+                payment: payMethod + " (توصيل: " + finalShipping + " ريال)"
+            };
+
+            fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(orderData)
+            }).then(() => {
+                alert("شكراً لكِ يا " + customerName + "!\nتم إرسال طلبك بنجاح وسنتواصل معكِ قريباً.");
+                cart = [];
+                updateUI();
+                if(document.getElementById('cartDrawer').style.display === 'flex') toggleCartDrawer();
+            }).catch(err => {
+                alert("حدث خطأ، يرجى المحاولة مرة أخرى.");
+            });
         };
-
-        fetch(scriptURL, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(orderData)
-        }).then(() => {
-            alert("شكراً لكِ يا " + customerName + "!\nتم إرسال طلبك بنجاح وسنتواصل معكِ قريباً.");
-            cart = [];
-            updateUI();
-            if(document.getElementById('cartDrawer').style.display === 'flex') toggleCartDrawer();
-        }).catch(err => {
-            console.error("Error:", err);
-            alert("حدث خطأ أثناء الإرسال، يرجى المحاولة مرة أخرى.");
-        });
     }
 </script>
 </body>
