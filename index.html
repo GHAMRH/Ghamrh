@@ -40,82 +40,115 @@
         </div>
     </div>
 
-    <main class="max-w-md mx-auto" id="products">
-        <h2 class="category-title">عبايات سوداء كلاسيك</h2>
-        <div class="product-grid">
-            <div class="product-card" onclick="openProductDetail('عباية دانتيل رسمية', 379, ['5.png', '6.png'])">
-                <img src="5.png" class="product-img">
-                <div class="mt-3 text-right">
-                    <h3 class="text-sm font-bold text-gray-700">عباية دانتيل رسمية</h3>
-                    <p class="text-orange-600 font-bold mt-1">379 ريال</p>
-                    <button class="w-full border border-gray-200 text-gray-600 py-2 rounded-lg text-xs mt-3">تفاصيل المنتج</button>
+<main class="max-w-md mx-auto px-4" id="products">
+    <h2 class="category-title text-xl font-bold text-right my-6">عبايات سوداء كلاسيك</h2>
+    
+    <div class="product-grid grid grid-cols-2 gap-4">
+        
+        <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100" 
+             onclick="openProductDetail('عباية دانتيل رسمية', 500, 379, ['5.png', '6.png'], 'عباية دانتيل ملكي، تتميز بتصميم رسمي وأنيق يناسب المناسبات والدوام، قماش كريب بارد وشديد السواد.')">
+            <img src="5.png" class="w-full h-56 object-cover">
+            <div class="p-3 text-right">
+                <h3 class="text-xs font-bold text-gray-700 truncate">عباية دانتيل رسمية</h3>
+                <div class="flex gap-2 items-center mt-1 justify-end">
+                    <span class="text-red-600 font-bold text-sm">379 ريال</span>
+                    <span class="text-gray-400 line-through text-[10px]">500 ريال</span>
                 </div>
-            </div>
-            <div class="product-card" onclick="openProductDetail('عباية تطريز كلاسيك', 320, ['5.png', '6.png'])">
-                <img src="5.png" class="product-img">
-                <div class="mt-3 text-right">
-                    <h3 class="text-sm font-bold text-gray-700">عباية تطريز كلاسيك</h3>
-                    <p class="text-orange-600 font-bold mt-1">320 ريال</p>
-                    <button class="w-full border border-gray-200 text-gray-600 py-2 rounded-lg text-xs mt-3">تفاصيل المنتج</button>
-                </div>
-            </div>
-             <div class="product-card" onclick="openProductDetail('عباية لماع كلوش', 258, ['5.png', '6.png'])">
-                <img src="5.png" class="product-img">
-                <div class="mt-3 text-right">
-                    <h3 class="text-sm font-bold text-gray-700">عباية لماع كلوش</h3>
-                    <p class="text-orange-600 font-bold mt-1">258 ريال</p>
-                    <button class="w-full border border-gray-200 text-gray-600 py-2 rounded-lg text-xs mt-3">تفاصيل المنتج</button>
-                </div>
+                <button class="w-full border border-gray-200 text-gray-500 py-2 rounded-lg text-[10px] mt-3 hover:bg-gray-50 transition">تفاصيل المنتج</button>
             </div>
         </div>
 
-        <div class="text-center my-10 p-6">
-            <p class="text-gray-400 text-sm mb-4">تواصل معنا</p>
-            <div class="flex justify-center gap-8">
-                <a href="https://wa.me/966502743396" class="text-2xl text-green-500"><i class="fab fa-whatsapp"></i></a>
-                <a href="Https://www.tiktok.com/@ghamra11" class="text-2xl text-black"><i class="fab fa-tiktok"></i></a>
-                <a href="Https://www.instagram.com/amirhmohammed22" class="text-2xl text-pink-600"><i class="fab fa-instagram"></i></a>
+        <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100" 
+             onclick="openProductDetail('عباية تطريز كلاسيك', 500, 320, ['5.png', '6.png'], 'عباية كلاسيكية بتطريز يدوي ناعم على الأكمام، قصة مريحة وعملية للاستخدام اليومي.')">
+            <img src="5.png" class="w-full h-56 object-cover">
+            <div class="p-3 text-right">
+                <h3 class="text-xs font-bold text-gray-700 truncate">عباية تطريز كلاسيك</h3>
+                <div class="flex gap-2 items-center mt-1 justify-end">
+                    <span class="text-red-600 font-bold text-sm">320 ريال</span>
+                    <span class="text-gray-400 line-through text-[10px]">500 ريال</span>
+                </div>
+                <button class="w-full border border-gray-200 text-gray-500 py-2 rounded-lg text-[10px] mt-3 hover:bg-gray-50 transition">تفاصيل المنتج</button>
             </div>
         </div>
-    </main>
 
-    <div id="productDetailModal" class="modal">
-        <div class="relative w-full h-full max-w-md mx-auto overflow-y-auto bg-white">
-            <div onclick="closeProductDetail()" class="back-arrow">
-                <i class="fas fa-chevron-right text-gray-800 text-sm"></i>
-            </div>
-            <div class="image-slider" id="modalSlider"></div>
-            <div class="p-6 text-right">
-                <h2 id="modalTitle" class="text-2xl font-bold text-gray-800 mb-1"></h2>
-                <p id="modalPrice" class="text-orange-600 text-xl font-bold mb-6"></p>
-                
-                <div class="mb-4">
-                    <label class="block text-sm font-bold mb-2 text-gray-700">اختر المقاس:</label>
-                    <select id="sizeSelect" class="w-full border border-gray-200 p-3 rounded-xl bg-gray-50 outline-none">
-                        <option value="50">مقاس 50</option>
-                        <option value="51">مقاس 51</option>
-                        <option value="52">مقاس 52</option>
-                        <option value="53">مقاس 53</option>
-                        <option value="54">مقاس 54</option>
-                        <option value="55">مقاس 55</option>
-                        <option value="56">مقاس 56</option>
-                        <option value="57">مقاس 57</option>
-                        <option value="58">مقاس 58</option>
-                    </select>
+        <div class="product-card bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100" 
+             onclick="openProductDetail('عباية لماع كلوش', 500, 258, ['5.png', '6.png'], 'عباية كلوش واسعة بقماش لماع خفيف يعطي فخامة وحضور مميز، مثالية للمناسبات.')">
+            <img src="5.png" class="w-full h-56 object-cover">
+            <div class="p-3 text-right">
+                <h3 class="text-xs font-bold text-gray-700 truncate">عباية لماع كلوش</h3>
+                <div class="flex gap-2 items-center mt-1 justify-end">
+                    <span class="text-red-600 font-bold text-sm">258 ريال</span>
+                    <span class="text-gray-400 line-through text-[10px]">500 ريال</span>
                 </div>
-
-                <div class="mb-6">
-                    <label class="block text-sm font-bold mb-2 text-gray-700">ملاحظات التعديل (اختياري):</label>
-                    <textarea id="itemNote" placeholder="مثلاً: تقصير 2 انش أو تغيير الطقطق..." class="w-full border border-gray-200 p-3 rounded-xl bg-gray-50 outline-none text-sm h-20 resize-none"></textarea>
-                </div>
-
-                <button id="modalAddBtn" class="w-full bg-black text-white py-4 rounded-xl font-bold flex justify-center items-center gap-3">
-                    <span>إضافة للسلة</span>
-                    <i class="fas fa-shopping-bag"></i>
-                </button>
+                <button class="w-full border border-gray-200 text-gray-500 py-2 rounded-lg text-[10px] mt-3 hover:bg-gray-50 transition">تفاصيل المنتج</button>
             </div>
+        </div>
+
+    </div>
+
+    <div class="text-center my-10 p-6">
+        <p class="text-gray-400 text-sm mb-4">تواصل معنا</p>
+        <div class="flex justify-center gap-8">
+            <a href="https://wa.me/966502743396" class="text-2xl text-green-500"><i class="fab fa-whatsapp"></i></a>
+            <a href="Https://www.tiktok.com/@ghamra11" class="text-2xl text-black"><i class="fab fa-tiktok"></i></a>
+            <a href="Https://www.instagram.com/amirhmohammed22" class="text-2xl text-pink-600"><i class="fab fa-instagram"></i></a>
         </div>
     </div>
+</main>
+
+<div id="productDetailModal" class="modal hidden fixed inset-0 z-[9999] bg-white overflow-y-auto">
+    <div class="max-w-md mx-auto min-h-screen pb-20">
+        <div onclick="closeProductDetail()" class="sticky top-4 right-4 z-10 w-10 h-10 bg-white shadow-md rounded-full flex items-center justify-center cursor-pointer">
+            <i class="fas fa-chevron-right text-gray-800"></i>
+        </div>
+
+        <div class="image-slider h-96 bg-gray-100" id="modalSlider"></div>
+
+        <div class="p-6 text-right">
+            <h2 id="modalTitle" class="text-2xl font-bold text-gray-800 mb-2"></h2>
+            <div class="flex gap-3 items-center mb-6 justify-end">
+                <span id="modalPrice" class="text-red-600 text-2xl font-bold"></span>
+                <span id="modalOldPrice" class="text-gray-400 line-through text-sm"></span>
+            </div>
+
+            <div class="bg-gray-50 p-4 rounded-xl mb-6">
+                <p id="productDescription" class="text-sm text-gray-600 leading-relaxed"></p>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-bold mb-3 text-gray-700">المقاس *</label>
+                <div id="sizeOptions" class="flex flex-wrap gap-2 justify-end">
+                    </div>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-bold mb-3 text-gray-700">تحبي العباية لف أو أزرار *</label>
+                <div class="flex gap-2">
+                    <button onclick="selectOption('wrap', 'لف', this)" class="opt-btn flex-1 py-3 border rounded-xl text-xs transition-all">لف</button>
+                    <button onclick="selectOption('wrap', 'إضافة أزرار', this)" class="opt-btn flex-1 py-3 border rounded-xl text-xs transition-all">إضافة أزرار</button>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-bold mb-3 text-gray-700">نوع الطرحة *</label>
+                <div class="flex gap-2 text-right">
+                    <button onclick="selectOption('veil', 'سادة', this)" class="opt-btn flex-1 py-3 border rounded-xl text-[10px] transition-all">سادة (مجاناً)</button>
+                    <button onclick="selectOption('veil', 'مطرزة', this)" class="opt-btn flex-1 py-3 border rounded-xl text-[10px] transition-all">مطرزة (+19 ريال)</button>
+                </div>
+            </div>
+
+            <div class="mb-8">
+                <label class="block text-sm font-bold mb-2 text-gray-700">ملاحظات التعديل:</label>
+                <textarea id="itemNote" placeholder="مثلاً: تقصير 2 انش..." class="w-full border border-gray-100 p-4 rounded-xl bg-gray-50 outline-none text-sm h-24 resize-none text-right"></textarea>
+            </div>
+
+            <button id="modalAddBtn" class="w-full bg-black text-white py-4 rounded-2xl font-bold text-lg shadow-lg flex justify-center items-center gap-3">
+                <span>إضافة للسلة</span>
+                <i class="fas fa-shopping-bag"></i>
+            </button>
+        </div>
+    </div>
+</div>
 
     <div class="cart-float-btn" onclick="toggleCartDrawer()">
         <i class="fas fa-shopping-bag text-xl"></i>
@@ -147,14 +180,96 @@
 <script>
     let cart = [];
     let total = 0;
+    let currentBasePrice = 0; // السعر الأساسي للعباية المفتوحة حالياً
+    let veilExtra = 0;       // الزيادة الخاصة بالطرحة (0 أو 19)
+    let selectedOptions = { size: '', wrap: '', veil: '' };
 
-    // رابط الـ Script حقك يا أميرة
-    const scriptURL = "https://script.google.com/macros/s/AKfycbz6FHgsHOrl4NjYwiuhskfdMyYMoO-FKcNWmelLLuy9FaazeLz0OtOOkO0oJ33RwEzO/exec";
+    // رابط الـ Script الخاص بك
+    const scriptURL = "https://script.google.com/macros/s/AKfycbxjMePwUNHZW_X7FjtrnapR6JOMtUuoxXlDLHky54n3pNh2muwBcfB_LPn9eV71g4K7/exec";
 
     function toggleCartDrawer() {
         const drawer = document.getElementById('cartDrawer');
         drawer.style.display = (drawer.style.display === 'flex') ? 'none' : 'flex';
         renderCart();
+    }
+
+    // فتح تفاصيل المنتج وتجهيز الخيارات
+    function openProductDetail(name, oldPrice, newPrice, images, desc) {
+        const modal = document.getElementById('productDetailModal');
+        currentBasePrice = newPrice;
+        veilExtra = 0;
+        selectedOptions = { size: '', wrap: '', veil: '' };
+
+        document.getElementById('modalTitle').innerText = name;
+        document.getElementById('productDescription').innerText = desc;
+        document.getElementById('modalOldPrice').innerText = oldPrice + " ريال";
+        document.getElementById('itemNote').value = "";
+        
+        updateModalPrice();
+        
+        // توليد أزرار المقاسات
+        const sizes = [48, 50, 52, 54, 56, 58, 60];
+        const sizeContainer = document.getElementById('sizeOptions'); // تأكدي أن هذا الـ ID موجود في الـ HTML
+        if(sizeContainer) {
+            sizeContainer.innerHTML = sizes.map(s => 
+                `<button onclick="selectOption('size', '${s}', this)" class="opt-btn w-12 h-12 border rounded-full flex items-center justify-center text-sm transition-all">${s}</button>`
+            ).join('');
+        }
+
+        const slider = document.getElementById('modalSlider');
+        slider.innerHTML = images.map(img => `<img src="${img}" class="w-full">`).join('');
+        
+        // عند الضغط على إضافة للسلة
+        document.getElementById('modalAddBtn').onclick = function() {
+            if(!selectedOptions.size || !selectedOptions.wrap || !selectedOptions.veil) {
+                return alert("يا أميرة، الزبونة لم تختار كل الخيارات (المقاس، نوع القفلة، أو الطرحة)!");
+            }
+            
+            const finalItemName = `${name} (${selectedOptions.wrap} + طرحة ${selectedOptions.veil})`;
+            const finalPrice = currentBasePrice + veilExtra;
+            const note = document.getElementById('itemNote').value;
+            
+            addToCart(finalItemName, finalPrice, images[0], selectedOptions.size, note);
+            closeProductDetail();
+            toggleCartDrawer();
+        };
+
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+
+    // وظيفة اختيار الخيارات وتحديث التنسيق والسعر
+    window.selectOption = function(type, value, btn) {
+        selectedOptions[type] = value;
+        
+        // إذا اختارت طرحة مطرزة نضيف 19 ريال
+        if (type === 'veil') {
+            veilExtra = (value === 'مطرزة') ? 19 : 0;
+            updateModalPrice();
+        }
+
+        // تمييز الزر المختار بصرياً
+        const parent = btn.parentElement;
+        parent.querySelectorAll('.opt-btn').forEach(b => {
+            b.style.border = "1px solid #e5e7eb";
+            b.style.backgroundColor = "white";
+            b.style.color = "black";
+        });
+        btn.style.border = "2px solid black";
+        btn.style.backgroundColor = "#f9fafb";
+        btn.style.fontWeight = "bold";
+    }
+
+    function updateModalPrice() {
+        const modalPriceElement = document.getElementById('modalPrice');
+        if(modalPriceElement) {
+            modalPriceElement.innerText = (currentBasePrice + veilExtra) + " ريال";
+        }
+    }
+
+    function closeProductDetail() {
+        document.getElementById('productDetailModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
     }
 
     function addToCart(name, price, image, size, note) {
@@ -186,7 +301,7 @@
                 <div class="flex-1 text-right">
                     <div class="font-bold text-gray-800 text-sm">${item.name}</div>
                     <div class="text-gray-500 text-[10px] mt-1">المقاس: ${item.size}</div>
-                    ${item.note ? `<div class="text-blue-600 text-[10px] italic">تعديل: ${item.note}</div>` : ''}
+                    ${item.note ? `<div class="text-blue-600 text-[10px] italic">ملاحظة: ${item.note}</div>` : ''}
                     <div class="text-orange-600 font-bold text-sm mt-1">${item.price} ريال</div>
                 </div>
                 <div class="flex flex-col items-center gap-2 bg-gray-50 rounded-xl px-2 py-1 border">
@@ -205,34 +320,17 @@
         renderCart();
     }
 
-    function openProductDetail(name, price, images) {
-        const modal = document.getElementById('productDetailModal');
-        document.getElementById('modalTitle').innerText = name;
-        document.getElementById('modalPrice').innerText = price + " ريال";
-        document.getElementById('itemNote').value = "";
-        const slider = document.getElementById('modalSlider');
-        slider.innerHTML = images.map(img => `<img src="${img}" class="w-full">`).join('');
-        
-        document.getElementById('modalAddBtn').onclick = function() {
-            const size = document.getElementById('sizeSelect').value;
-            const note = document.getElementById('itemNote').value;
-            addToCart(name, price, images[0], size, note);
-            closeProductDetail();
-            toggleCartDrawer();
-        };
-        modal.style.display = 'block';
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeProductDetail() {
-        document.getElementById('productDetailModal').style.display = 'none';
-        document.body.style.overflow = 'auto';
-    }
-
-    // --- النافذة الشاملة الجديدة يا أميرة ---
+    // --- نافذة إتمام الطلب (Send Order) ---
     async function sendOrder() {
         if (cart.length === 0) return alert("السلة فارغة يا أميرة!");
+        
+        // الكود هنا يفتح مودال تعبئة البيانات (الاسم، الجوال، الموقع، طريقة الدفع)
+        // [ملاحظة: استخدمي نفس كود الـ orderModalHtml الذي لديكِ]
+        openOrderModal(); 
+    }
 
+    function openOrderModal() {
+        // قمت بتبسيط الاستدعاء ليكون مرتباً
         const orderModalHtml = `
             <div id="orderModal" style="position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:10000; display:flex; align-items:center; justify-content:center; padding:15px; font-family:'Tajawal',sans-serif; overflow-y:auto;">
                 <div style="background:white; padding:25px; border-radius:25px; width:100%; max-width:450px; text-align:right; direction:rtl; box-shadow:0 10px 30px rgba(0,0,0,0.3); margin-top:auto; margin-bottom:auto;">
@@ -242,7 +340,7 @@
                         <input type="text" id="custName" placeholder="الاسم الكريم" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:12px; outline:none;">
                         <input type="tel" id="custPhone" placeholder="رقم الجوال (05XXXXXXXX)" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:12px; outline:none;">
                         <input type="text" id="custLoc" placeholder="المدينة والحي" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:12px; outline:none;">
-                        <textarea id="custNotes" placeholder="ملاحظات إضافية" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:12px; outline:none; height:60px;"></textarea>
+                        <textarea id="custNotes" placeholder="ملاحظات إضافية للتوصيل" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:12px; outline:none; height:60px;"></textarea>
                         
                         <button id="gpsBtn" onclick="getGPS()" style="background:#f0fdf4; color:#166534; padding:10px; border-radius:12px; border:1px dashed #166534; font-size:12px; cursor:pointer;">
                              📍 مشاركة الموقع GPS (اختياري)
@@ -286,11 +384,9 @@
                 </div>
             </div>
         `;
-
         document.body.insertAdjacentHTML('beforeend', orderModalHtml);
     }
 
-    // وظائف النافذة
     window.updateOrderTotal = function(type) {
         const bank = document.getElementById('bankDetails');
         const finalP = document.getElementById('finalPrice');
@@ -337,17 +433,17 @@
         const gps = document.getElementById('gpsLink').value;
 
         if (!name || !phone || !window.payType) {
-            return alert("يا أميرة، الزبونة نسيت تعبي بياناتها أو تختار الدفع!");
+            return alert("الرجاء إكمال البيانات واختيار طريقة الدفع!");
         }
         
         if (!/^05\d{8}$/.test(phone)) {
-            return alert("رقم الجوال لازم يبدأ بـ 05 ويكون 10 أرقام.");
+            return alert("رقم الجوال غير صحيح.");
         }
 
         document.getElementById('subBtn').innerText = "جاري الإرسال...";
         document.getElementById('subBtn').disabled = true;
 
-        const itemsText = cart.map(i => `- ${i.name} (${i.size}) العدد:${i.qty}`).join("\n");
+        const itemsText = cart.map(i => `- ${i.name} (مقاس:${i.size}) ${i.note ? `[تعديل:${i.note}]` : ''} العدد:${i.qty}`).join("\n");
 
         const orderData = {
             name: name,
