@@ -12,260 +12,183 @@
         .hero-banner { position: relative; width: 100%; height: 350px; background-color: #000; overflow: hidden; }
         .hero-banner img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
         .category-title { border-right: 4px solid #800020; padding-right: 10px; margin: 25px 15px; font-weight: bold; color: #374151; }
-        
-        .opt-btn { border: 1px solid #e5e7eb; transition: all 0.2s; background: white; cursor: pointer; }
+        .opt-btn { border: 1px solid #e5e7eb; transition: all 0.2s; background: white; cursor: pointer; text-align: center; border-radius: 12px; }
         .opt-btn.selected { border: 2px solid #800020 !important; background-color: #fff5f5 !important; font-weight: bold; }
-        
         #productDetailModal, #cartDrawer, #orderModal { display: none; }
-        .modal-bg { background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); }
+        .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 10000; display: none; align-items: center; justify-content: center; p: 4; }
     </style>
 </head>
 <body>
 
     <header class="bg-white text-gray-800 p-4 sticky top-0 z-50 text-center shadow-sm border-b">
-        <h1 class="text-xl font-bold tracking-tighter">GHAMRA | غمرة</h1>
+        <h1 class="text-xl font-bold">GHAMRA | غمرة</h1>
     </header>
 
-    <div class="hero-banner">
-        <img src="4.png" alt="كولكشن غمرة">
-        <div class="absolute inset-0 flex flex-col justify-center items-center text-white text-center">
-            <h2 class="text-xl font-bold mb-1 tracking-widest uppercase">New Collection</h2>
-            <p class="text-sm opacity-90 mb-6">عبايات غمرة كولكشن العيد..</p>
-            <a href="#products" class="border border-white px-8 py-2 rounded-full text-sm">عرض الكل</a>
-        </div>
-    </div>
-
     <main class="max-w-md mx-auto px-4" id="products">
-        <h2 class="category-title text-xl font-bold text-right my-6">عبايات سوداء كلاسيك</h2>
-        
+        <h2 class="category-title text-xl font-bold text-right my-6">عبايات كولكشن العيد</h2>
         <div class="grid grid-cols-2 gap-4">
             <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-2 cursor-pointer" 
-                 onclick="openProductDetail('عباية دانتيل رسمية', 500, 379, ['5.png', '6.png'], 'عباية دانتيل ملكي، تتميز بتصميم رسمي وأنيق.')">
+                 onclick="openProductDetail('عباية دانتيل رسمية', 500, 379, ['5.png'], 'عباية فاخرة بتصميم عصري.')">
                 <img src="5.png" class="w-full h-56 object-cover rounded-xl">
                 <div class="p-3 text-right">
                     <h3 class="text-xs font-bold text-gray-700 truncate">عباية دانتيل رسمية</h3>
-                    <div class="flex gap-2 items-center mt-1 justify-end">
-                        <span class="text-red-600 font-bold text-sm">379 ريال</span>
-                        <span class="text-gray-400 line-through text-[10px]">500 ريال</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-2 cursor-pointer" 
-                 onclick="openProductDetail('عباية تطريز كلاسيك', 500, 320, ['5.png', '6.png'], 'عباية كلاسيكية بتطريز يدوي ناعم على الأكمام.')">
-                <img src="5.png" class="w-full h-56 object-cover rounded-xl">
-                <div class="p-3 text-right">
-                    <h3 class="text-xs font-bold text-gray-700 truncate">عباية تطريز كلاسيك</h3>
-                    <div class="flex gap-2 items-center mt-1 justify-end">
-                        <span class="text-red-600 font-bold text-sm">320 ريال</span>
-                        <span class="text-gray-400 line-through text-[10px]">500 ريال</span>
-                    </div>
+                    <span class="text-red-600 font-bold text-sm">379 ريال</span>
                 </div>
             </div>
         </div>
     </main>
 
     <div id="productDetailModal" class="fixed inset-0 z-[9999] bg-white overflow-y-auto">
-        <div class="max-w-md mx-auto p-6 text-right">
-            <div onclick="closeProductDetail()" class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer mb-4">
-                <i class="fas fa-chevron-right"></i>
-            </div>
-            <div class="flex overflow-x-auto h-80 bg-gray-50 rounded-2xl mb-6 scroll-smooth snap-x" id="modalSlider"></div>
+        <div class="max-w-md mx-auto p-6 text-right pb-32">
+            <div onclick="closeProductDetail()" class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer mb-4"><i class="fas fa-arrow-right"></i></div>
+            <img id="mainImg" src="" class="w-full h-80 object-cover rounded-2xl mb-6">
             <h2 id="modalTitle" class="text-2xl font-bold mb-2"></h2>
-            <div class="flex gap-3 justify-end items-center mb-6">
-                <span id="modalPrice" class="text-red-600 text-2xl font-bold"></span>
-                <span id="modalOldPrice" class="text-gray-400 line-through text-sm"></span>
-            </div>
-            
+            <div id="modalPrice" class="text-red-600 text-2xl font-bold mb-6"></div>
+
             <label class="block font-bold mb-2 text-sm">المقاس *</label>
             <div id="sizeOptions" class="flex flex-wrap gap-2 justify-end mb-6"></div>
 
-            <label class="block font-bold mb-2 text-sm">نوع القفلة والطرحة *</label>
+            <label class="block font-bold mb-2 text-sm">نوع القفلة *</label>
             <div class="grid grid-cols-2 gap-2 mb-6">
-                <button onclick="selectOption('wrap', 'لف', this)" class="opt-btn py-3 rounded-xl text-xs">لف</button>
-                <button onclick="selectOption('wrap', 'أزرار', this)" class="opt-btn py-3 rounded-xl text-xs">أزرار</button>
+                <button onclick="selectOption('wrap', 'لف', this)" class="opt-btn py-3 text-xs">لف</button>
+                <button onclick="selectOption('wrap', 'طقطق', this)" class="opt-btn py-3 text-xs">طقطق</button>
             </div>
-            
-            <textarea id="itemNote" placeholder="أي ملاحظات إضافية؟" class="w-full border p-3 rounded-xl bg-gray-50 h-20 mb-6 text-sm outline-none"></textarea>
-            
+
+            <label class="block font-bold mb-2 text-sm">نوع الطرحة *</label>
+            <div class="grid grid-cols-2 gap-2 mb-6">
+                <button onclick="selectOption('veil', 'سادة', this, 0)" class="opt-btn py-3 text-xs">سادة (مجاناً)</button>
+                <button onclick="selectOption('veil', 'مطرزة', this, 20)" class="opt-btn py-3 text-xs">مطرزة (+20 ريال)</button>
+            </div>
+
+            <textarea id="itemNote" placeholder="ملاحظاتك الإضافية..." class="w-full border p-3 rounded-xl bg-gray-50 h-20 mb-6 text-sm text-right outline-none"></textarea>
             <button id="modalAddBtn" class="w-full bg-black text-white py-4 rounded-2xl font-bold">إضافة للسلة</button>
-        </div>
-    </div>
-
-    <div class="fixed bottom-24 left-6 bg-[#800020] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-xl z-[1000] cursor-pointer" onclick="toggleCartDrawer()">
-        <i class="fas fa-shopping-bag text-xl"></i>
-        <span id="cartCount" class="absolute -top-1 -right-1 bg-red-600 text-[10px] rounded-full px-2">0</span>
-    </div>
-
-    <div id="cartDrawer" class="fixed bottom-[100px] left-4 right-4 bg-white z-[2000] rounded-2xl shadow-2xl flex flex-col border border-gray-100 max-h-[50vh]">
-        <div class="p-4 border-b flex justify-between items-center font-bold bg-gray-50 rounded-t-2xl">
-            <span>سلة المشتريات</span>
-            <button onclick="toggleCartDrawer()" class="text-xl text-gray-400">×</button>
-        </div>
-        <div id="cartItemsList" class="p-4 overflow-y-auto text-right text-xs flex-1"></div>
-        <div class="p-4 border-t flex justify-between font-bold">
-            <span class="text-gray-500">الإجمالي النهائي:</span>
-            <span class="text-[#800020]"><span id="inner-total">0</span> ريال</span>
         </div>
     </div>
 
     <div class="fixed bottom-0 left-0 right-0 bg-white p-4 shadow-2xl border-t z-50 max-w-md mx-auto rounded-t-3xl">
         <div class="flex justify-between mb-4 font-bold px-2">
-            <span class="text-gray-400 text-sm font-normal">المجموع:</span>
+            <span class="text-gray-400 text-sm">مجموع المنتجات:</span>
             <span><span id="total-price">0</span> ريال</span>
         </div>
-        <button onclick="openOrderModal()" class="w-full bg-black text-white py-4 rounded-xl font-bold text-lg">إتمام الطلب</button>
+        <button onclick="showOrderForm()" class="w-full bg-black text-white py-4 rounded-xl font-bold text-lg">إتمام الطلب</button>
     </div>
 
-    <div id="orderModal" class="fixed inset-0 modal-bg z-[10000] flex items-center justify-center p-4">
-        <div class="bg-white p-6 rounded-3xl w-full max-w-sm text-right">
-            <h3 class="font-bold mb-4 border-b pb-2 text-lg">تأكيد الطلب 🧾</h3>
-            <div class="space-y-3 mb-4">
-                <input type="text" id="custName" placeholder="الاسم الكريم" class="w-full p-3 border rounded-xl outline-none">
-                <input type="tel" id="custPhone" placeholder="رقم الجوال 05xxxxxxxx" class="w-full p-3 border rounded-xl outline-none">
-                <input type="text" id="custLoc" placeholder="المدينة / الحي" class="w-full p-3 border rounded-xl outline-none">
-            </div>
+    <div id="orderModal" class="modal-bg flex">
+        <div class="bg-white p-6 rounded-3xl w-full max-w-sm text-right mx-4 shadow-2xl">
+            <h3 class="font-bold mb-4 border-b pb-2 text-lg">الاسم الكريم وبيانات التوصيل 🚚</h3>
             
-            <p class="text-[10px] text-gray-400 mb-2">خطوة إجبارية لتسهيل التوصيل:</p>
-            <button id="gpsBtn" onclick="getGPS()" class="w-full p-3 border-dashed border-2 border-red-200 text-red-600 rounded-xl mb-4 text-xs font-bold transition-all">
-                📍 مشاركة الموقع GPS (مطلوب)
-            </button>
+            <div class="space-y-3 mb-4">
+                <input type="text" id="custName" placeholder="الاسم الكامل" class="w-full p-3 border rounded-xl outline-none text-right">
+                <input type="tel" id="custPhone" placeholder="رقم الجوال" class="w-full p-3 border rounded-xl outline-none text-right">
+                
+                <label class="block font-bold text-xs mt-2">منطقة التوصيل *</label>
+                <select id="deliverySelect" onchange="calcFinal()" class="w-full p-3 border rounded-xl bg-gray-50 outline-none text-sm">
+                    <option value="0">اختر منطقتك...</option>
+                    <option value="35">داخل الرياض (35 ريال)</option>
+                    <option value="50">خارج الرياض - شحن (50 ريال)</option>
+                </select>
+            </div>
+
+            <div class="bg-gray-50 p-4 rounded-2xl mb-4 text-sm">
+                <div class="flex justify-between mb-1"><span>سعر العبايات:</span><span><span id="res-items">0</span> ريال</span></div>
+                <div class="flex justify-between mb-1"><span>سعر التوصيل:</span><span><span id="res-ship">0</span> ريال</span></div>
+                <div class="flex justify-between font-bold border-t pt-2 mt-2"><span>الإجمالي:</span><span class="text-[#800020]"><span id="res-total">0</span> ريال</span></div>
+            </div>
+
+            <button id="gpsBtn" onclick="getGPS()" class="w-full p-3 border-dashed border-2 border-red-200 text-red-600 rounded-xl mb-4 text-xs font-bold">📍 مشاركة الموقع GPS (إجباري)</button>
             <input type="hidden" id="gpsLink" value="">
 
-            <button onclick="submitOrder()" id="subBtn" class="w-full bg-gray-300 text-white p-4 rounded-xl font-bold cursor-not-allowed" disabled>
-                إرسال الطلب
-            </button>
-            <button onclick="document.getElementById('orderModal').style.display='none'" class="w-full text-gray-400 mt-4 text-sm text-center">رجوع</button>
+            <button onclick="finalSubmit()" id="subBtn" class="w-full bg-gray-300 text-white p-4 rounded-xl font-bold cursor-not-allowed" disabled>إرسال الطلب الآن</button>
+            <button onclick="document.getElementById('orderModal').style.display='none'" class="w-full text-gray-400 mt-4 text-sm">إلغاء</button>
         </div>
     </div>
 
     <script>
-        let cart = [], total = 0, currentBasePrice = 0;
-        let selectedOptions = { size: '', wrap: '' };
-        
-        // رابط الـ ScriptURL الخاص بكِ
+        let cart = [], total = 0, currentBasePrice = 0, extras = 0;
+        let selected = { size: '', wrap: '', veil: '' };
         const scriptURL = "https://script.google.com/macros/s/AKfycbxjMePwUNHZW_X7FjtrnapR6JOMtUuoxXlDLHky54n3pNh2muwBcfB_LPn9eV71g4K7/exec";
 
         function openProductDetail(name, old, price, imgs, desc) {
-            currentBasePrice = price;
-            selectedOptions = { size: '', wrap: '' };
+            currentBasePrice = price; extras = 0;
             document.getElementById('modalTitle').innerText = name;
             document.getElementById('modalPrice').innerText = price + " ريال";
-            document.getElementById('modalOldPrice').innerText = old + " ريال";
-            document.getElementById('modalSlider').innerHTML = imgs.map(i => `<img src="${i}" class="w-full flex-shrink-0 snap-center object-cover">`).join('');
-            document.getElementById('sizeOptions').innerHTML = [48, 50, 52, 54, 56, 58, 60].map(s => 
-                `<button onclick="selectOption('size', '${s}', this)" class="opt-btn w-10 h-10 rounded-full text-xs">${s}</button>`
-            ).join('');
+            document.getElementById('mainImg').src = imgs[0];
+            document.getElementById('sizeOptions').innerHTML = [48, 50, 52, 54, 56, 58, 60].map(s => `<button onclick="selectOption('size', '${s}', this)" class="opt-btn w-10 h-10 text-xs">${s}</button>`).join('');
             document.getElementById('productDetailModal').style.display = 'block';
             
             document.getElementById('modalAddBtn').onclick = () => {
-                if(!selectedOptions.size || !selectedOptions.wrap) return alert("يا أميرة، يرجى اختيار المقاس ونوع القفلة");
-                cart.push({ name, price: currentBasePrice, size: selectedOptions.size, wrap: selectedOptions.wrap, note: document.getElementById('itemNote').value });
-                updateUI(); closeProductDetail(); toggleCartDrawer();
+                if(!selected.size || !selected.wrap || !selected.veil) return alert("يرجى اختيار المقاس والقفلة والطرحة");
+                cart.push({ name, price: currentBasePrice + extras, size: selected.size, details: `${selected.wrap}, طرحة ${selected.veil}`, note: document.getElementById('itemNote').value });
+                updateMainUI(); closeProductDetail();
             };
         }
 
-        function selectOption(type, val, btn) {
-            selectedOptions[type] = val;
+        function selectOption(type, val, btn, addPrice = 0) {
+            selected[type] = val;
+            if(type === 'veil') { 
+                extras = addPrice; 
+                document.getElementById('modalPrice').innerText = (currentBasePrice + extras) + " ريال";
+            }
             Array.from(btn.parentElement.children).forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
         }
 
         function closeProductDetail() { document.getElementById('productDetailModal').style.display = 'none'; }
         
-        function updateUI() {
+        function updateMainUI() {
             total = cart.reduce((s, i) => s + i.price, 0);
             document.getElementById('total-price').innerText = total;
-            document.getElementById('inner-total').innerText = total;
-            document.getElementById('cartCount').innerText = cart.length;
         }
 
-        function toggleCartDrawer() {
-            const d = document.getElementById('cartDrawer');
-            d.style.display = (d.style.display === 'flex') ? 'none' : 'flex';
-            document.getElementById('cartItemsList').innerHTML = cart.map((i, idx) => 
-                `<div class="flex justify-between items-center mb-3 border-b pb-2">
-                    <div><b>${i.name}</b><br><span class="text-gray-400">مقاس ${i.size} - ${i.price} ريال</span></div>
-                    <button onclick="removeFromCart(${idx})" class="text-red-500 text-lg">×</button>
-                </div>`
-            ).join('') || "السلة فارغة";
-        }
-
-        function removeFromCart(idx) {
-            cart.splice(idx, 1);
-            updateUI();
-            toggleCartDrawer();
-            toggleCartDrawer(); // لتحديث المحتوى
-        }
-
-        function openOrderModal() {
-            if(!cart.length) return alert("السلة فارغة!");
+        function showOrderForm() {
+            if(cart.length === 0) return alert("السلة فارغة");
             document.getElementById('orderModal').style.display = 'flex';
+            calcFinal();
         }
 
-        // --- وظيفة GPS إجباري ---
-        window.getGPS = function() {
+        function calcFinal() {
+            const ship = parseInt(document.getElementById('deliverySelect').value);
+            document.getElementById('res-items').innerText = total;
+            document.getElementById('res-ship').innerText = ship;
+            document.getElementById('res-total').innerText = total + ship;
+        }
+
+        function getGPS() {
             const btn = document.getElementById('gpsBtn');
-            const subBtn = document.getElementById('subBtn');
-            btn.innerText = "جاري تحديد موقعك... ⏳";
-            
-            navigator.geolocation.getCurrentPosition(
-                (pos) => {
-                    const link = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-                    document.getElementById('gpsLink').value = link;
-                    btn.innerText = "✅ تم تحديد الموقع بنجاح";
-                    btn.style.backgroundColor = "#dcfce7";
-                    btn.style.color = "#166534";
-                    btn.style.borderColor = "#166534";
-                    
-                    // تفعيل زر الإرسال
-                    subBtn.disabled = false;
-                    subBtn.classList.replace('bg-gray-300', 'bg-black');
-                    subBtn.classList.remove('cursor-not-allowed');
-                },
-                (err) => {
-                    alert("يجب تفعيل خدمة الموقع (GPS) لنتمكن من توصيل طلبك بدقة.");
-                    btn.innerText = "📍 اضغطي هنا لمشاركة الموقع (مطلوب)";
-                },
-                { enableHighAccuracy: true, timeout: 8000 }
-            );
+            const sub = document.getElementById('subBtn');
+            btn.innerText = "جاري تحديد الموقع... ⏳";
+            navigator.geolocation.getCurrentPosition((pos) => {
+                document.getElementById('gpsLink').value = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
+                btn.innerText = "✅ تم تحديد الموقع";
+                btn.className = "w-full p-3 bg-green-50 text-green-600 rounded-xl mb-4 text-xs font-bold";
+                sub.disabled = false;
+                sub.classList.replace('bg-gray-300', 'bg-black');
+            }, () => alert("فضلاً فعلي الـ GPS للمتابعة"));
         }
 
-        async function submitOrder() {
+        async function finalSubmit() {
             const name = document.getElementById('custName').value;
             const phone = document.getElementById('custPhone').value;
-            const gpsValue = document.getElementById('gpsLink').value;
+            const ship = document.getElementById('deliverySelect').value;
+            if(!name || !phone || ship === "0") return alert("يرجى إكمال جميع البيانات");
 
-            if(!name || !phone) return alert("يرجى ملء الاسم ورقم الجوال");
-            if(!gpsValue) return alert("مشاركة الموقع (GPS) خطوة إجبارية");
+            const sub = document.getElementById('subBtn');
+            sub.innerText = "جاري إرسال الطلب...";
+            sub.disabled = true;
 
-            const subBtn = document.getElementById('subBtn');
-            subBtn.innerText = "جاري الإرسال للإدارة...";
-            subBtn.disabled = true;
-
-            const orderData = {
+            const data = {
                 name: name,
                 phone: phone,
-                location: document.getElementById('custLoc').value,
-                gps: gpsValue,
-                items: cart.map(i => `${i.name} (مقاس:${i.size} قفلة:${i.wrap}) ملاحظات: ${i.note}`).join(' | '),
-                total: total
+                gps: document.getElementById('gpsLink').value,
+                items: cart.map(i => `${i.name} (${i.size}) [${i.details}]`).join(' | '),
+                total: total + parseInt(ship)
             };
 
             try {
-                await fetch(scriptURL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    body: JSON.stringify(orderData)
-                });
-                alert("شكراً لكِ يا " + name + "! تم إرسال طلبك بنجاح وسنتواصل معكِ قريباً.");
-                cart = []; updateUI();
+                await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
+                alert("شكراً لكِ! تم إرسال الطلب بنجاح.");
                 location.reload();
-            } catch (e) {
-                alert("حدث خطأ، يرجى المحاولة مرة أخرى.");
-                subBtn.disabled = false;
-                subBtn.innerText = "إرسال الطلب";
-            }
+            } catch (e) { alert("خطأ في الإرسال"); sub.disabled = false; }
         }
     </script>
 </body>
