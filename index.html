@@ -131,7 +131,7 @@
     let total = 0;
 
     // الرابط الجديد الخاص بكِ لربط الأعمدة العشرة
-    const scriptURL = "https://script.google.com/macros/s/AKfycbyN8TNyaDI1tGwMi8jYYhRp8aqX2wboLPHNqbRU7sxA5-quj3vUmyfQ22GNVi8BTT85/exec";
+    const scriptURL = "https://script.google.com/macros/s/AKfycby_vl53RSVTH4QKL6ID0fqqSYUoEhlMRoamPToaS6O9f8n6NQFGQCfSgjIFjnz_jybs/exec";
 
     // فتح وإغلاق السلة
     function toggleCartDrawer() {
@@ -215,32 +215,71 @@
         document.body.style.overflow = 'auto';
     }
 
-    // إرسال الطلب النهائي لقوقل شيت (تعبئة الأعمدة العشرة)
-    function sendOrder() {
-        if (cart.length === 0) return alert("السلة فارغة!");
-        
-        // جمع بيانات العميلة
+    // إرسال الطلب النهائي لقوقل شيت مع إضافة الـ GPS والتحقق من الرقم
+    async function sendOrder() {
+        if (cart.length === 0) return alert("السلة فارغة يا أميرة!");
+
+        // 1. طلب الاسم
         const customerName = prompt("الاسم الكريم:");
         if (!customerName) return;
-        
-        const customerPhone = prompt("رقم الجوال:");
-        if (!customerPhone) return alert("يرجى إدخال رقم الجوال لإتمام الطلب");
-        
-        const customerLoc = prompt("موقع التوصيل (المدينة والحي):");
+
+        // 2. طلب رقم الجوال والتحقق منه
+        let customerPhone = prompt("رقم الجوال (05XXXXXXXX):");
+        if (!customerPhone || !/^05\d{8}$/.test(customerPhone)) {
+            alert("خطأ في رقم الجوال، يرجى التأكد من البدء بـ 05 ومن ثم 8 أرقام.");
+            return;
+        }
+
+        // 3. الحصول على الموقع (GPS)
+        let googleMapsLink = "لم يتم مشاركة الموقع";
+        if (confirm("هل تسمحين بمشاركة موقعك (GPS) لتسهيل التوصيل؟")) {
+            try {
+                const pos = await new Promise((res, rej) => {
+                    navigator.geolocation.getCurrentPosition(res, rej, { 
+                        timeout: 8000, 
+                        enableHighAccuracy: true 
+                    });
+                });
+                // تصحيح الرابط ليكون رابط قوقل ماب مباشر
+                googleMapsLink = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
+            } catch (err) { 
+                alert("تعذر الحصول على الموقع، سيتم الإرسال بدونه."); 
+            }
+        }
+
+        const customerLoc = prompt("موقع التوصيل (المدينة والحي):") || "غير محدد";
         const customerNotes = prompt("هل لديكِ أي ملاحظات إضافية؟") || "لا يوجد";
 
         // تجهيز نص الطلبات
         const itemsText = cart.map(i => `- ${i.name} (مقاس: ${i.size}) العدد: ${i.qty}`).join("\n");
-        
-        // بناء الكائن الذي سيتم إرساله للشيت
+
+        // بناء الكائن (تأكدي أن السكربت في قوقل شيت يستقبل هذه الأسماء)
         const orderData = {
             name: customerName,
             phone: customerPhone,
             location: customerLoc,
+            gps: googleMapsLink, // هذا العمود الجديد للموقع
             items: itemsText,
             total: total,
             notes: customerNotes
         };
+
+        // عملية الإرسال
+        fetch(scriptURL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(orderData)
+        }).then(() => {
+            alert("شكراً لكِ يا " + customerName + "!\nتم إرسال طلبك بنجاح وسنتواصل معكِ قريباً.");
+            cart = [];
+            updateUI();
+            if(document.getElementById('cartDrawer').style.display === 'flex') toggleCartDrawer();
+        }).catch(err => {
+            console.error("Error:", err);
+            alert("حدث خطأ أثناء الإرسال، يرجى المحاولة مرة أخرى.");
+        });
+    }
 
         // عملية الإرسال
         fetch(scriptURL, {
