@@ -8,229 +8,280 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style> 
-        body { font-family: 'Tajawal', sans-serif; background-color: #f9fafb; padding-bottom: 140px; }
+        body { font-family: 'Tajawal', sans-serif; background-color: #f9fafb; padding-bottom: 120px; }
+        html { scroll-behavior: smooth; }
+        .hero-banner { position: relative; width: 100%; height: 350px; background-color: #000; overflow: hidden; }
+        .hero-banner img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
+        .product-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 15px; }
+        .product-card { background: white; border-radius: 15px; padding: 10px; display: flex; flex-direction: column; box-shadow: 0 2px 8px rgba(0,0,0,0.05); cursor: pointer; }
+        .product-img { width: 100%; aspect-ratio: 1 / 1.2; object-fit: cover; border-radius: 10px; }
+        .image-slider { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+        .image-slider::-webkit-scrollbar { display: none; }
+        .image-slider img { flex-shrink: 0; width: 100%; aspect-ratio: 3 / 4; object-fit: cover; scroll-snap-align: center; }
+        .back-arrow { position: absolute; top: 20px; right: 20px; background: white; width: 35px; height: 35px; border-radius: 50%; display: flex; justify-content: center; align-items: center; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
+        
+        #cartDrawer { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: white; z-index: 2000; border-radius: 25px 25px 0 0; box-shadow: 0 -10px 40px rgba(0,0,0,0.2); max-height: 70vh; flex-direction: column; transition: all 0.3s ease; }
+        .cart-float-btn { position: fixed; bottom: 100px; left: 20px; background: #800020; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 15px rgba(128,0,32,0.4); cursor: pointer; z-index: 1000; }
+        .modal { display: none; position: fixed; z-index: 3000; left: 0; top: 0; width: 100%; height: 100%; background: white; }
         .category-title { border-right: 4px solid #800020; padding-right: 10px; margin: 25px 15px; font-weight: bold; color: #374151; }
-        .opt-btn { border: 1px solid #e5e7eb; transition: all 0.2s; background: white; cursor: pointer; }
-        .opt-btn.selected { border: 2px solid #800020 !important; background-color: #fff5f5 !important; font-weight: bold; color: #800020; }
-        #productDetailModal, #cartDrawer, #orderModal { display: none; }
-        .modal-bg { background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); }
+        .opt-btn.active { border: 2px solid #800020 !important; background-color: #fdf2f2 !important; font-weight: bold; color: #800020 !important; }
     </style>
 </head>
 <body>
 
-    <header class="bg-white p-4 sticky top-0 z-50 text-center shadow-sm border-b">
+    <header class="bg-white text-gray-800 p-4 sticky top-0 z-50 text-center shadow-sm border-b">
         <h1 class="text-xl font-bold tracking-tighter" style="color: #800020;">GHAMRA | غمرة</h1>
     </header>
 
-    <main class="max-w-md mx-auto px-4" id="products">
-        <h2 class="category-title text-xl font-bold text-right my-6">كولكشن غمرة</h2>
-        <div class="grid grid-cols-2 gap-4">
-            <div class="bg-white rounded-2xl shadow-sm border p-2 cursor-pointer" onclick="openProductDetail('عباية دانتيل رسمية', 500, 379, ['5.png'], 'عباية دانتيل ملكي.')">
-                <img src="5.png" class="w-full h-52 object-cover rounded-xl">
-                <div class="p-2 text-right">
-                    <h3 class="text-xs font-bold truncate">عباية دانتيل رسمية</h3>
-                    <div class="flex gap-2 items-center justify-end mt-1">
-                        <span class="text-red-600 font-bold text-sm">379 ريال</span>
-                        <span class="text-gray-400 line-through text-[10px]">500 ريال</span>
-                    </div>
+    <div class="hero-banner">
+        <img src="4.png" alt="عيد كولكشن">
+        <div class="absolute inset-0 flex flex-col justify-center items-center text-white text-center">
+            <h2 class="text-xl font-bold mb-1 tracking-widest">NEW COLLECTION GHAMRA</h2>
+            <p class="text-sm opacity-90 mb-6">عبايات غمرة كولكشن العيد..</p>
+            <a href="#products" class="border border-white px-8 py-2 rounded-full text-sm">عرض الكل</a>
+        </div>
+    </div>
+
+<main class="max-w-md mx-auto" id="products">
+    <h2 class="category-title text-xl font-bold">عبايات سوداء كلاسيك</h2>
+    
+    <div class="product-grid">
+        <div class="product-card" onclick="openProductDetail('عباية دانتيل رسمية', 500, 379, ['5.png', '6.png'], 'عباية دانتيل ملكي، تتميز بتصميم رسمي وأنيق يناسب المناسبات والدوام.')">
+            <img src="5.png" class="product-img">
+            <div class="mt-3 text-right">
+                <h3 class="text-sm font-bold text-gray-700">عباية دانتيل رسمية</h3>
+                <div class="flex gap-2 items-center mt-1 justify-end">
+                    <span style="color: #800020;" class="font-bold text-sm">379 ريال</span>
+                    <span class="text-gray-400 line-through text-[10px]">500 ريال</span>
                 </div>
-            </div>
-            <div class="bg-white rounded-2xl shadow-sm border p-2 cursor-pointer" onclick="openProductDetail('عباية تطريز كلاسيك', 500, 320, ['5.png'], 'عباية تطريز فخمة.')">
-                <img src="5.png" class="w-full h-52 object-cover rounded-xl">
-                <div class="p-2 text-right">
-                    <h3 class="text-xs font-bold truncate">عباية تطريز كلاسيك</h3>
-                    <div class="flex gap-2 items-center justify-end mt-1">
-                        <span class="text-red-600 font-bold text-sm">320 ريال</span>
-                        <span class="text-gray-400 line-through text-[10px]">500 ريال</span>
-                    </div>
-                </div>
+                <button class="w-full border border-gray-200 text-gray-500 py-2 rounded-lg text-xs mt-3">تفاصيل المنتج</button>
             </div>
         </div>
-    </main>
 
-    <div id="productDetailModal" class="fixed inset-0 z-[9999] bg-white overflow-y-auto">
-        <div class="max-w-md mx-auto p-6 text-right">
-            <div onclick="closeProductDetail()" class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer mb-4"><i class="fas fa-chevron-right"></i></div>
-            <div id="modalSlider" class="h-80 bg-gray-50 rounded-2xl mb-6 overflow-hidden"></div>
-            <h2 id="modalTitle" class="text-2xl font-bold mb-2"></h2>
-            <div class="flex gap-3 justify-end items-center mb-6">
-                <span id="modalPrice" class="text-red-600 text-2xl font-bold"></span>
+        <div class="product-card" onclick="openProductDetail('عباية تطريز كلاسيك', 500, 320, ['5.png', '6.png'], 'عباية كلاسيكية بتطريز يدوي ناعم على الأكمام، قصة مريحة وعملية.')">
+            <img src="5.png" class="product-img">
+            <div class="mt-3 text-right">
+                <h3 class="text-sm font-bold text-gray-700">عباية تطريز كلاسيك</h3>
+                <div class="flex gap-2 items-center mt-1 justify-end">
+                    <span style="color: #800020;" class="font-bold text-sm">320 ريال</span>
+                    <span class="text-gray-400 line-through text-[10px]">500 ريال</span>
+                </div>
+                <button class="w-full border border-gray-200 text-gray-500 py-2 rounded-lg text-xs mt-3">تفاصيل المنتج</button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div id="productDetailModal" class="modal">
+    <div class="relative w-full h-full max-w-md mx-auto overflow-y-auto bg-white">
+        <div onclick="closeProductDetail()" class="back-arrow">
+            <i class="fas fa-chevron-right text-gray-800 text-sm"></i>
+        </div>
+        <div class="image-slider" id="modalSlider"></div>
+        <div class="p-6 text-right">
+            <h2 id="modalTitle" class="text-2xl font-bold text-gray-800 mb-1"></h2>
+            <div class="flex gap-3 items-center mb-4 justify-end">
+                <span id="modalPrice" style="color: #800020;" class="text-2xl font-bold"></span>
                 <span id="modalOldPrice" class="text-gray-400 line-through text-sm"></span>
             </div>
             
-            <label class="block font-bold mb-2 text-sm">المقاس *</label>
-            <div id="sizeOptions" class="flex flex-wrap gap-2 justify-end mb-6"></div>
+            <p id="productDescription" class="text-sm text-gray-500 mb-6 bg-gray-50 p-3 rounded-xl"></p>
 
-            <label class="block font-bold mb-2 text-sm">نوع القفلة والطرحة *</label>
-            <div class="grid grid-cols-2 gap-2 mb-6">
-                <button onclick="selectOption('wrap', 'بدون ازرار', this)" class="opt-btn py-3 rounded-xl text-xs">بدون أزرار</button>
-                <button onclick="selectOption('wrap', 'أزرار طقطق', this)" class="opt-btn py-3 rounded-xl text-xs">أزرار طقطق</button>
+            <div class="mb-6">
+                <label class="block text-sm font-bold mb-3 text-gray-700">المقاس *</label>
+                <div id="sizeOptions" class="flex flex-wrap gap-2 justify-end"></div>
             </div>
-            
-            <textarea id="itemNote" placeholder="أي ملاحظات؟" class="w-full border p-3 rounded-xl h-20 mb-6 text-sm outline-none"></textarea>
-            <button id="modalAddBtn" class="w-full bg-black text-white py-4 rounded-2xl font-bold">إضافة للسلة</button>
+
+            <div class="mb-6">
+                <label class="block text-sm font-bold mb-3 text-gray-700">القفلة *</label>
+                <div class="flex gap-2">
+                    <button onclick="selectOption('wrap', 'لف', this)" class="opt-btn flex-1 py-3 border rounded-xl text-xs">لف</button>
+                    <button onclick="selectOption('wrap', 'إضافة أزرار', this)" class="opt-btn flex-1 py-3 border rounded-xl text-xs">إضافة أزرار</button>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm font-bold mb-3 text-gray-700">نوع الطرحة *</label>
+                <div class="flex gap-2">
+                    <button onclick="selectOption('veil', 'سادة', this)" class="opt-btn flex-1 py-3 border rounded-xl text-xs">سادة (مجاناً)</button>
+                    <button onclick="selectOption('veil', 'مطرزة', this)" class="opt-btn flex-1 py-3 border rounded-xl text-xs">مطرزة (+19 ريال)</button>
+                </div>
+            </div>
+
+            <button id="modalAddBtn" style="background-color: #800020;" class="w-full text-white py-4 rounded-2xl font-bold text-lg shadow-lg flex justify-center items-center gap-3">
+                <span>إضافة للسلة</span>
+                <i class="fas fa-shopping-bag"></i>
+            </button>
         </div>
     </div>
+</div>
 
-    <div class="fixed bottom-32 left-6 bg-[#800020] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-xl z-[1000] cursor-pointer" onclick="toggleCartDrawer()">
-        <i class="fas fa-shopping-bag text-xl"></i>
-        <span id="cartCount" class="absolute -top-1 -right-1 bg-red-600 text-[10px] rounded-full px-2">0</span>
+<div class="cart-float-btn" onclick="toggleCartDrawer()">
+    <i class="fas fa-shopping-bag text-xl"></i>
+    <span id="cartCount" class="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] rounded-full px-1.5 font-bold">0</span>
+</div>
+
+<div id="cartDrawer">
+    <div class="flex justify-between items-center p-4 border-b bg-gray-50 rounded-t-2xl">
+        <button onclick="toggleCartDrawer()" class="text-3xl text-gray-400">&times;</button>
+        <span class="font-bold text-gray-700">سلة المشتريات</span>
     </div>
-
-    <div id="cartDrawer" class="fixed bottom-[120px] left-4 right-4 bg-white z-[2000] rounded-2xl shadow-2xl flex flex-col border max-h-[60vh]">
-        <div class="p-4 border-b flex justify-between items-center font-bold bg-gray-50 rounded-t-2xl">
-            <span>سلة المشتريات</span>
-            <button onclick="toggleCartDrawer()" class="text-xl text-gray-400">×</button>
+    <div id="cartItemsList" class="overflow-y-auto p-4 flex-1 text-right"></div>
+    
+    <div class="p-6 border-t bg-white space-y-2">
+        <div class="flex justify-between text-gray-400 text-xs">
+            <span>المجموع قبل الخصم:</span>
+            <span class="line-through"><span id="inner-old-total">0</span> ريال</span>
         </div>
-        <div id="cartItemsList" class="p-4 overflow-y-auto text-right text-xs flex-1"></div>
-        <div class="p-4 border-t space-y-1 bg-gray-50">
-            <div class="flex justify-between text-gray-400 text-[10px]">
-                <span>المجموع الأصلي:</span>
-                <span class="line-through"><span id="inner-old-total">0</span> ريال</span>
-            </div>
-            <div class="flex justify-between text-red-600 font-bold text-xs">
-                <span>المجموع بعد الخصم:</span>
-                <span><span id="inner-discount-total">0</span> ريال</span>
-            </div>
-            <div class="flex justify-between text-gray-600 text-[10px]">
-                <span>التوصيل:</span>
-                <span>15 ريال</span>
-            </div>
+        <div class="flex justify-between text-red-600 font-bold text-sm">
+            <span>المجموع بعد الخصم:</span>
+            <span><span id="inner-total">0</span> ريال</span>
         </div>
+        <div class="flex justify-between text-gray-700 font-bold border-t pt-2">
+            <span>الإجمالي (مع التوصيل):</span>
+            <span style="color: #800020;"><span id="inner-final-total">0</span> ريال</span>
+        </div>
+        <button onclick="sendOrder()" style="background-color: #800020;" class="w-full text-white py-4 rounded-2xl font-bold mt-2">إتمام الطلب</button>
     </div>
+</div>
 
-    <div class="fixed bottom-0 left-0 right-0 bg-white p-4 shadow-2xl border-t z-50 max-w-md mx-auto rounded-t-3xl">
-        <div class="flex flex-col mb-4 px-2">
-            <div class="flex justify-between items-center">
-                <span class="text-gray-400 text-[10px]">المجموع الأصلي: <span class="line-through" id="bar-old-total">0</span> ريال</span>
-                <span class="text-red-600 font-bold text-sm">خصم: <span id="bar-discount-total">0</span> ريال</span>
-            </div>
-            <div class="flex justify-between items-center mt-1 border-t pt-2">
-                <span class="font-bold text-gray-700">الإجمالي النهائي (مع التوصيل):</span>
-                <span class="text-xl font-bold text-black"><span id="final-total">0</span> ريال</span>
-            </div>
-        </div>
-        <button onclick="openOrderModal()" class="w-full bg-black text-white py-4 rounded-xl font-bold">إتمام الطلب</button>
+<div class="fixed bottom-0 left-0 right-0 bg-white p-4 shadow-lg border-t z-50 max-w-md mx-auto rounded-t-3xl flex justify-between items-center">
+    <div class="text-right">
+        <p class="text-gray-400 text-[10px]">المجموع الأصلي: <span class="line-through" id="bar-old-total">0</span></p>
+        <p class="text-xl font-bold" style="color: #800020;"><span id="total-price">0</span> ريال</p>
     </div>
+    <button onclick="sendOrder()" style="background-color: #800020;" class="px-8 py-3 text-white rounded-xl font-bold flex items-center gap-2">
+        <span>إتمام الطلب</span>
+        <i class="fas fa-chevron-left text-xs"></i>
+    </button>
+</div>
 
-    <div id="orderModal" class="fixed inset-0 modal-bg z-[10000] flex items-center justify-center p-4">
-        <div class="bg-white p-6 rounded-3xl w-full max-w-sm text-right">
-            <h3 class="font-bold mb-4 border-b pb-2">تأكيد الطلب 🧾</h3>
-            <input type="text" id="custName" placeholder="الاسم الكريم" class="w-full p-3 border rounded-xl mb-3 outline-none">
-            <input type="tel" id="custPhone" placeholder="رقم الجوال" class="w-full p-3 border rounded-xl mb-3 outline-none">
-            <button id="gpsBtn" onclick="getGPS()" class="w-full p-3 border-dashed border-2 border-red-200 text-red-600 rounded-xl mb-4 text-xs font-bold">📍 مشاركة الموقع GPS (مطلوب)</button>
-            <input type="hidden" id="gpsLink">
-            <button onclick="submitOrder()" id="subBtn" class="w-full bg-gray-300 text-white p-4 rounded-xl font-bold" disabled>إرسال الطلب</button>
-            <button onclick="document.getElementById('orderModal').style.display='none'" class="w-full text-gray-400 mt-4 text-sm">رجوع</button>
-        </div>
-    </div>
+<script>
+    let cart = [];
+    let oldTotal = 0;
+    let discountTotal = 0;
+    let shipping = 15; // سعر التوصيل الافتراضي
+    let currentBasePrice = 0;
+    let currentOldPrice = 0;
+    let veilExtra = 0;
+    let selectedOptions = { size: '', wrap: '', veil: '' };
 
-    <script>
-        let cart = [], oldTotal = 0, discountTotal = 0, shipping = 15;
-        let selectedOptions = { size: '', wrap: '' };
-        const scriptURL = "https://script.google.com/macros/s/AKfycbxjMePwUNHZW_X7FjtrnapR6JOMtUuoxXlDLHky54n3pNh2muwBcfB_LPn9eV71g4K7/exec";
+    const scriptURL = "https://script.google.com/macros/s/AKfycbxjMePwUNHZW_X7FjtrnapR6JOMtUuoxXlDLHky54n3pNh2muwBcfB_LPn9eV71g4K7/exec";
 
-        function openProductDetail(name, oldP, newP, imgs, desc) {
-            // تصفير الاختيارات في كل مرة يفتح فيها منتج جديد
-            selectedOptions = { size: '', wrap: '' };
-            document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
-            document.getElementById('itemNote').value = "";
+    function toggleCartDrawer() {
+        const drawer = document.getElementById('cartDrawer');
+        drawer.style.display = (drawer.style.display === 'flex') ? 'none' : 'flex';
+        renderCart();
+    }
 
-            document.getElementById('modalTitle').innerText = name;
-            document.getElementById('modalPrice').innerText = newP + " ريال";
-            document.getElementById('modalOldPrice').innerText = oldP + " ريال";
-            document.getElementById('modalSlider').innerHTML = imgs.map(i => `<img src="${i}" class="w-full h-full object-cover">`).join('');
-            
-            document.getElementById('sizeOptions').innerHTML = [50, 52, 54, 56, 58, 60].map(s => 
-                `<button onclick="selectOption('size', '${s}', this)" class="opt-btn w-10 h-10 rounded-full text-xs">${s}</button>`
-            ).join('');
-            
-            document.getElementById('productDetailModal').style.display = 'block';
+    function openProductDetail(name, oldPrice, newPrice, images, desc) {
+        // تصفير الاختيارات بصرياً وواقعياً
+        selectedOptions = { size: '', wrap: '', veil: '' };
+        veilExtra = 0;
+        currentBasePrice = newPrice;
+        currentOldPrice = oldPrice;
+        
+        document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
+        
+        document.getElementById('modalTitle').innerText = name;
+        document.getElementById('productDescription').innerText = desc;
+        document.getElementById('modalOldPrice').innerText = oldPrice + " ريال";
+        updateModalPrice();
+        
+        const sizes = [50, 52, 54, 56, 58, 60];
+        document.getElementById('sizeOptions').innerHTML = sizes.map(s => 
+            `<button onclick="selectOption('size', '${s}', this)" class="opt-btn w-12 h-12 border rounded-full flex items-center justify-center text-sm transition-all">${s}</button>`
+        ).join('');
 
-            document.getElementById('modalAddBtn').onclick = () => {
-                if(!selectedOptions.size || !selectedOptions.wrap) return alert("يا أميرة، لازم تختارين المقاس ونوع القفلة!");
-                cart.push({ name, oldP, newP, size: selectedOptions.size, wrap: selectedOptions.wrap, note: document.getElementById('itemNote').value });
-                updateUI(); closeProductDetail(); toggleCartDrawer();
-            };
+        document.getElementById('modalSlider').innerHTML = images.map(img => `<img src="${img}" class="w-full">`).join('');
+        
+        document.getElementById('modalAddBtn').onclick = function() {
+            if(!selectedOptions.size || !selectedOptions.wrap || !selectedOptions.veil) {
+                return alert("يا أميرة، الرجاء اختيار المقاس والقفلة ونوع الطرحة!");
+            }
+            const itemPrice = currentBasePrice + veilExtra;
+            const itemOldPrice = currentOldPrice;
+            addToCart(name, itemPrice, itemOldPrice, images[0], selectedOptions.size, selectedOptions.wrap, selectedOptions.veil);
+            closeProductDetail();
+            toggleCartDrawer();
+        };
+
+        document.getElementById('productDetailModal').style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    }
+
+    window.selectOption = function(type, value, btn) {
+        selectedOptions[type] = value;
+        if (type === 'veil') {
+            veilExtra = (value === 'مطرزة') ? 19 : 0;
+            updateModalPrice();
         }
+        const parent = btn.parentElement;
+        parent.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+    }
 
-        function selectOption(type, val, btn) {
-            selectedOptions[type] = val;
-            Array.from(btn.parentElement.children).forEach(b => b.classList.remove('selected'));
-            btn.classList.add('selected');
+    function updateModalPrice() {
+        document.getElementById('modalPrice').innerText = (currentBasePrice + veilExtra) + " ريال";
+    }
+
+    function closeProductDetail() {
+        document.getElementById('productDetailModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
+    function addToCart(name, price, oldPrice, image, size, wrap, veil) {
+        cart.push({ name, price, oldPrice, image, size, wrap, veil, qty: 1 });
+        updateUI();
+    }
+
+    function updateUI() {
+        discountTotal = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+        oldTotal = cart.reduce((sum, i) => sum + (i.oldPrice * i.qty), 0);
+        
+        // تحديث المبالغ في السلة
+        document.getElementById('inner-old-total').innerText = oldTotal;
+        document.getElementById('inner-total').innerText = discountTotal;
+        document.getElementById('inner-final-total').innerText = discountTotal > 0 ? (discountTotal + shipping) : 0;
+        
+        // تحديث المبالغ في الشريط السفلي
+        document.getElementById('bar-old-total').innerText = oldTotal;
+        document.getElementById('total-price').innerText = discountTotal;
+        
+        document.getElementById('cartCount').innerText = cart.reduce((sum, i) => sum + i.qty, 0);
+    }
+
+    function renderCart() {
+        const list = document.getElementById('cartItemsList');
+        if (cart.length === 0) {
+            list.innerHTML = '<p class="text-center text-gray-400 py-10">السلة فارغة</p>';
+            return;
         }
+        list.innerHTML = cart.map((item, idx) => `
+            <div class="flex items-center gap-4 mb-4 border-b pb-4">
+                <img src="${item.image}" class="w-16 h-20 object-cover rounded-lg">
+                <div class="flex-1 text-right">
+                    <div class="font-bold text-gray-800 text-xs">${item.name}</div>
+                    <div class="text-gray-400 text-[10px]">المقاس: ${item.size} | ${item.wrap}</div>
+                    <div style="color: #800020;" class="font-bold text-sm mt-1">${item.price} ريال <span class="text-gray-300 line-through text-[9px]">${item.oldPrice}</span></div>
+                </div>
+                <button onclick="changeQty(${idx}, -1)" class="text-red-300 text-xs">حذف</button>
+            </div>
+        `).join('');
+    }
 
-        function closeProductDetail() { document.getElementById('productDetailModal').style.display = 'none'; }
+    function changeQty(idx, delta) {
+        cart[idx].qty += delta;
+        if (cart[idx].qty <= 0) cart.splice(idx, 1);
+        updateUI();
+        renderCart();
+    }
 
-        function updateUI() {
-            oldTotal = cart.reduce((s, i) => s + i.oldP, 0);
-            discountTotal = cart.reduce((s, i) => s + i.newP, 0);
-            let final = discountTotal > 0 ? discountTotal + shipping : 0;
-
-            // تحديث السلة
-            document.getElementById('inner-old-total').innerText = oldTotal;
-            document.getElementById('inner-discount-total').innerText = discountTotal;
-            
-            // تحديث الشريط السفلي
-            document.getElementById('bar-old-total').innerText = oldTotal;
-            document.getElementById('bar-discount-total').innerText = discountTotal;
-            document.getElementById('final-total').innerText = final;
-            
-            document.getElementById('cartCount').innerText = cart.length;
-        }
-
-        function toggleCartDrawer() {
-            const d = document.getElementById('cartDrawer');
-            d.style.display = (d.style.display === 'flex') ? 'none' : 'flex';
-            document.getElementById('cartItemsList').innerHTML = cart.map((i, idx) => 
-                `<div class="flex justify-between items-center mb-3 border-b pb-2">
-                    <div><b>${i.name}</b> (مقاس ${i.size})<br><span class="text-red-600">${i.newP} ريال</span> <span class="text-gray-400 line-through text-[10px]">${i.oldP}</span></div>
-                    <button onclick="removeFromCart(${idx})" class="text-red-500 text-lg">×</button>
-                </div>`
-            ).join('') || "السلة فارغة";
-        }
-
-        function removeFromCart(idx) {
-            cart.splice(idx, 1);
-            updateUI();
-            toggleCartDrawer(); toggleCartDrawer();
-        }
-
-        function openOrderModal() {
-            if(!cart.length) return alert("السلة فارغة!");
-            document.getElementById('orderModal').style.display = 'flex';
-        }
-
-        window.getGPS = function() {
-            const btn = document.getElementById('gpsBtn');
-            const subBtn = document.getElementById('subBtn');
-            btn.innerText = "جاري تحديد موقعك... ⏳";
-            navigator.geolocation.getCurrentPosition((pos) => {
-                document.getElementById('gpsLink').value = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-                btn.innerText = "✅ تم تحديد الموقع";
-                btn.style.background = "#dcfce7";
-                subBtn.disabled = false;
-                subBtn.classList.replace('bg-gray-300', 'bg-black');
-            }, () => alert("فضلاً فعلي الـ GPS"), { enableHighAccuracy: true });
-        }
-
-        async function submitOrder() {
-            const subBtn = document.getElementById('subBtn');
-            subBtn.innerText = "جاري الإرسال...";
-            subBtn.disabled = true;
-
-            const orderData = {
-                name: document.getElementById('custName').value,
-                phone: document.getElementById('custPhone').value,
-                gps: document.getElementById('gpsLink').value,
-                items: cart.map(i => `${i.name} (مقاس:${i.size} ${i.wrap})`).join(' | '),
-                total: discountTotal + shipping
-            };
-
-            await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(orderData) });
-            alert("تم إرسال طلبك بنجاح يا أميرة!");
-            location.reload();
-        }
-    </script>
+    async function sendOrder() {
+        if (cart.length === 0) return alert("السلة فارغة يا أميرة!");
+        // هنا تفتحين مودال بيانات العميل كما في كودك السابق
+        alert("سيتم تحويلك لبيانات الدفع، الإجمالي النهائي: " + (discountTotal + shipping) + " ريال");
+    }
+</script>
 </body>
 </html>
