@@ -89,6 +89,17 @@
                     </div>
                 </div>
             </div>
+             <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-2 cursor-pointer transition active:scale-95" 
+                 onclick="openProductDetail('عباية  سوداء', 450, 299, ['7.png', '8.png'], 'عباية كلاسيكية ناعمة بقصة واسعة ومريحة.')">
+                <img src="7.png" class="w-full h-56 object-cover rounded-xl">
+                <div class="p-3 text-right">
+                    <h3 class="text-xs font-bold text-gray-700 truncate">عباية  سوداء</h3>
+                    <div class="flex gap-2 items-center mt-1 justify-end">
+                        <span class="text-[#800020] font-bold text-sm">299 ريال</span>
+                        <span class="text-gray-400 line-through text-[10px]">450 ريال</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
 
@@ -111,8 +122,8 @@
 
             <label class="block font-bold mb-2 text-sm">نوع القفلة *</label>
             <div class="flex gap-2 mb-6">
-                <button onclick="selectOption('wrap', 'لف', this)" class="opt-btn flex-1 py-3 rounded-xl text-xs">لف</button>
-                <button onclick="selectOption('wrap', 'طقطق', this)" class="opt-btn flex-1 py-3 rounded-xl text-xs">طقطق</button>
+                <button onclick="selectOption('wrap', 'بدون أزرار', this)" class="opt-btn flex-1 py-3 rounded-xl text-xs">بدون أزرار</button>
+                <button onclick="selectOption('wrap', '(طقطق) أزرار', this)" class="opt-btn flex-1 py-3 rounded-xl text-xs">(طقطق) أزرار</button>
             </div>
 
             <label class="block font-bold mb-2 text-sm">الطرحة *</label>
@@ -165,7 +176,7 @@
             <h3 class="font-bold mb-4 border-b pb-2 text-[#800020]">بيانات التوصيل 📦</h3>
             <input type="text" id="custName" placeholder="الاسم الكريم" class="w-full p-3 border rounded-xl mb-3 outline-none focus:border-[#800020]">
             <input type="tel" id="custPhone" placeholder="رقم الجوال (05xxxxxxxx)" class="w-full p-3 border rounded-xl mb-3 outline-none text-right focus:border-[#800020]">
-            
+            <input type="text" id="orderNote" placeholder="ملاحظات على التوصيل" class="w-full p-3 border rounded-xl mb-3 outline-none text-right focus:border-[#800020]">
             <label class="block font-bold text-xs mb-3">اختر طريقة الدفع والتوصيل *</label>
             <div class="space-y-2 mb-4">
                 <div onclick="setPayMethod('تحويل', 15)" id="payTransfer" class="pay-option active">
@@ -249,7 +260,7 @@
             document.body.style.overflow = 'hidden';
             
             document.getElementById('modalAddBtn').onclick = () => {
-                if(!selectedOptions.size || !selectedOptions.wrap || !selectedOptions.veil) return alert("يا أميرة، يرجى اختيار كل الخيارات");
+                if(!selectedOptions.size || !selectedOptions.wrap || !selectedOptions.veil) return alert("يرجى اختيار كل الخيارات");
                 
                 // حفظ الملاحظة من التكست أريا
                 const noteVal = document.getElementById('itemNote').value;
@@ -331,47 +342,54 @@
             }, () => alert("فضلاً فعلي الـ GPS للمتابعة وتحديد عنوانك بدقة"));
         }
 
-        async function submitToSheet() {
-            const name = document.getElementById('custName').value;
-            const phone = document.getElementById('custPhone').value;
-            
-            if(!name || !/^05\d{8}$/.test(phone)) {
-                return alert("يرجى التأكد من الاسم والجوال (05xxxxxxxx)");
-            }
+       async function submitToSheet() {
+    const name = document.getElementById('custName').value;
+    const phone = document.getElementById('custPhone').value;
+    const gpsVal = document.getElementById('gpsLink').value;
+    
+    // 1. سحب ملاحظة التوصيل العامة من الخانة الجديدة (ID: orderNote)
+    const deliveryNote = document.getElementById('orderNote').value;
+    
+    if(!name || !/^05\d{8}$/.test(phone)) {
+        return alert("يرجى التأكد من الاسم والجوال (05xxxxxxxx)");
+    }
 
-            const btn = document.getElementById('subBtn');
-            btn.innerText = "جاري الحفظ في النظام..."; 
-            btn.disabled = true;
+    const btn = document.getElementById('subBtn');
+    btn.innerText = "جاري الحفظ في النظام..."; 
+    btn.disabled = true;
 
-            const orderData = {
-                name: name,
-                phone: phone,
-                // ندمج المنتجات مع ملاحظاتها لترسل للشيت
-                items: cart.map(i => `${i.name} (مقاس:${i.size}) [ملاحظة: ${i.note || 'لا يوجد'}]`).join(' | '),
-                total: document.getElementById('finalWithShip').innerText,
-                location: "تم تحديد الموقع عبر الخريطة", 
-                payment: selectedPay,
-                // نجمع الملاحظات في خانة الملاحظات أيضاً للتاكيد
-                notes: cart.map(i => i.note).filter(n => n !== "").join(' // ') || "لا يوجد ملاحظات إضافية",
-                gps: document.getElementById('gpsLink').value
-            };
+    const orderData = {
+        name: name,
+        phone: phone,
+        // 2. هنا تظهر تعديلات العبايات (تقصير، تضييق) بجانب كل عباية في العمود 5
+        items: cart.map(i => `${i.name} (مقاس:${i.size}) [تعديل: ${i.note || 'لا يوجد'}]`).join(' | '),
+        
+        total: document.getElementById('finalWithShip').innerText,
+        location: "تم تحديد الموقع عبر الخريطة", 
+        payment: selectedPay,
+        
+        // 3. هنا نرسل ملاحظة التوصيل فقط لتظهر في العمود 9 لوحدها
+        notes: deliveryNote || "لا يوجد ملاحظات توصيل", 
+        
+        gps: document.getElementById('gpsLink').value
+    };
 
-            try {
-                await fetch(scriptURL, { 
-                    method: 'POST', 
-                    mode: 'no-cors', 
-                    body: JSON.stringify(orderData) 
-                });
+    try {
+        await fetch(scriptURL, { 
+            method: 'POST', 
+            mode: 'no-cors', 
+            body: JSON.stringify(orderData) 
+        });
 
-                alert(`أهلاً يا ${name}، تم إتمام طلبك بنجاح!\nسنتواصل معكِ قريباً لتأكيد الطلب.`);
-                location.reload(); 
-                
-            } catch (e) { 
-                alert("حدث خطأ في الاتصال، يرجى المحاولة مرة أخرى."); 
-                btn.disabled = false; 
-                btn.innerText = "تأكيد الطلب";
-            }
-        }
+        alert(`أهلاً يا ${name}، تم إتمام طلبك بنجاح!\nسنتواصل معكِ قريباً لتأكيد الطلب.`);
+        location.reload(); 
+        
+    } catch (e) { 
+        alert("حدث خطأ في الاتصال، يرجى المحاولة مرة أخرى."); 
+        btn.disabled = false; 
+        btn.innerText = "تأكيد الطلب";
+    }
+}
     </script>
 </body>
 </html>
