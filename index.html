@@ -144,12 +144,11 @@
             <i class="fas fa-check-circle"></i>
         </button>
     </div>
-
 <script>
     let cart = [];
     let total = 0;
 
-    // تأكدي يا أميرة إن هذا الرابط هو الرابط الأخير اللي أخذتيه من Apps Script
+    // رابط الـ Script حقك يا أميرة
     const scriptURL = "https://script.google.com/macros/s/AKfycbz6FHgsHOrl4NjYwiuhskfdMyYMoO-FKcNWmelLLuy9FaazeLz0OtOOkO0oJ33RwEzO/exec";
 
     function toggleCartDrawer() {
@@ -230,114 +229,149 @@
         document.body.style.overflow = 'auto';
     }
 
-    // --- الدالة المعدلة يا أميرة لإتمام الطلب ---
+    // --- النافذة الشاملة الجديدة يا أميرة ---
     async function sendOrder() {
         if (cart.length === 0) return alert("السلة فارغة يا أميرة!");
 
-        // إنشاء نافذة اختيار طريقة الدفع
-        const paymentHtml = `
-            <div id="paymentModal" style="position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; display:flex; align-items:center; justify-content:center; padding:20px; font-family:'Tajawal',sans-serif;">
-                <div style="background:white; padding:25px; border-radius:25px; width:100%; max-width:400px; text-align:right; box-shadow:0 10px 25px rgba(0,0,0,0.2);">
-                    <h3 style="font-weight:bold; font-size:18px; margin-bottom:20px; color:#333;">اختاري طريقة الدفع</h3>
+        const orderModalHtml = `
+            <div id="orderModal" style="position:fixed; inset:0; background:rgba(0,0,0,0.7); z-index:10000; display:flex; align-items:center; justify-content:center; padding:15px; font-family:'Tajawal',sans-serif; overflow-y:auto;">
+                <div style="background:white; padding:25px; border-radius:25px; width:100%; max-width:450px; text-align:right; direction:rtl; box-shadow:0 10px 30px rgba(0,0,0,0.3); margin-top:auto; margin-bottom:auto;">
+                    <h3 style="font-weight:bold; font-size:18px; margin-bottom:15px; border-bottom:1px solid #eee; padding-bottom:10px;">إكمال الطلب 🛍️</h3>
                     
-                    <label style="display:flex; align-items:center; gap:12px; cursor:pointer; margin-bottom:15px; padding:15px; border:2px solid #eee; border-radius:15px; transition:0.3s;" id="labelTransfer">
-                        <input type="radio" name="payMethod" value="transfer" style="accent-color:black; transform:scale(1.2);" 
-                            onclick="document.getElementById('bankInfo').style.display='block'; document.getElementById('codInfo').style.display='none'; window.selectedPay='تحويل بنكي'; window.shipping=15; document.getElementById('labelTransfer').style.borderColor='black'; document.getElementById('labelCod').style.borderColor='#eee';">
-                        <div>
-                            <span style="font-weight:bold; display:block; font-size:14px;">تحويل بنكي</span>
-                            <small style="color:#059669; font-weight:bold;">خصم 50% على التوصيل (15 ريال)</small>
-                        </div>
-                    </label>
-
-                    <label style="display:flex; align-items:center; gap:12px; cursor:pointer; margin-bottom:15px; padding:15px; border:2px solid #eee; border-radius:15px; transition:0.3s;" id="labelCod">
-                        <input type="radio" name="payMethod" value="cod" style="accent-color:black; transform:scale(1.2);" 
-                            onclick="document.getElementById('bankInfo').style.display='none'; document.getElementById('codInfo').style.display='block'; window.selectedPay='الدفع عند الاستلام'; window.shipping=30; document.getElementById('labelCod').style.borderColor='black'; document.getElementById('labelTransfer').style.borderColor='#eee';">
-                        <div>
-                            <span style="font-weight:bold; display:block; font-size:14px;">الدفع عند الاستلام</span>
-                            <small style="color:#666;">سعر التوصيل (30 ريال)</small>
-                        </div>
-                    </label>
-
-                    <div id="bankInfo" style="display:none; background:#f0f9ff; padding:15px; border-radius:12px; font-size:13px; margin-bottom:15px; border:1px solid #bae6fd; color:#0369a1;">
-                        <p><b>🏦 مصرف الراجحي</b></p>
-                        <p>الأيبان: SA0000000000000000000000</p>
-                        <p>باسم: أميرة محمد</p>
-                        <hr style="margin:10px 0; border-color:#bae6fd;">
-                        <p style="font-weight:bold;">المطلوب تحويله: ${total + 15} ريال</p>
+                    <div style="display:flex; flex-direction:column; gap:10px; margin-bottom:20px;">
+                        <input type="text" id="custName" placeholder="الاسم الكريم" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:12px; outline:none;">
+                        <input type="tel" id="custPhone" placeholder="رقم الجوال (05XXXXXXXX)" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:12px; outline:none;">
+                        <input type="text" id="custLoc" placeholder="المدينة والحي" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:12px; outline:none;">
+                        <textarea id="custNotes" placeholder="ملاحظات إضافية" style="width:100%; padding:12px; border:1px solid #ddd; border-radius:12px; outline:none; height:60px;"></textarea>
+                        
+                        <button id="gpsBtn" onclick="getGPS()" style="background:#f0fdf4; color:#166534; padding:10px; border-radius:12px; border:1px dashed #166534; font-size:12px; cursor:pointer;">
+                             📍 مشاركة الموقع GPS (اختياري)
+                        </button>
+                        <input type="hidden" id="gpsLink" value="لم يتم مشاركة الموقع">
                     </div>
 
-                    <div id="codInfo" style="display:none; background:#fff7ed; padding:15px; border-radius:12px; font-size:13px; margin-bottom:15px; border:1px solid #fed7aa; color:#9a3412;">
-                        <p>سيتم دفع المبلغ عند الباب</p>
-                        <p style="font-weight:bold;">الإجمالي شامل التوصيل: ${total + 30} ريال</p>
+                    <h4 style="font-weight:bold; font-size:14px; margin-bottom:10px;">طريقة الدفع:</h4>
+                    
+                    <label style="display:flex; align-items:center; gap:10px; cursor:pointer; margin-bottom:10px; padding:12px; border:2px solid #eee; border-radius:15px;" id="labelT">
+                        <input type="radio" name="payM" onclick="updateOrderTotal('transfer')" style="accent-color:black;">
+                        <div>
+                            <span style="font-weight:bold; font-size:13px;">تحويل بنكي</span>
+                            <small style="color:#059669; display:block;">توصيل مخفض (15 ريال)</small>
+                        </div>
+                    </label>
+
+                    <label style="display:flex; align-items:center; gap:10px; cursor:pointer; margin-bottom:10px; padding:12px; border:2px solid #eee; border-radius:15px;" id="labelC">
+                        <input type="radio" name="payM" onclick="updateOrderTotal('cod')" style="accent-color:black;">
+                        <div>
+                            <span style="font-weight:bold; font-size:13px;">الدفع عند الاستلام</span>
+                            <small style="color:#666; display:block;">توصيل (30 ريال)</small>
+                        </div>
+                    </label>
+
+                    <div id="bankDetails" style="display:none; background:#eff6ff; padding:12px; border-radius:12px; font-size:12px; margin-top:10px; border:1px solid #bfdbfe;">
+                        <p>🏦 <b>مصرف الراجحي</b></p>
+                        <p>الأيبان: SA0000000000000000000000</p>
+                        <p>باسم: أميرة محمد</p>
+                    </div>
+
+                    <div id="totalSummary" style="margin:20px 0; background:#f9fafb; padding:15px; border-radius:12px; text-align:center;">
+                        <span style="font-size:14px; color:#666;">الإجمالي النهائي:</span>
+                        <div style="font-size:22px; font-weight:bold; color:black;"><span id="finalPrice">...</span> ريال</div>
                     </div>
 
                     <div style="display:flex; gap:10px;">
-                        <button id="confirmPayBtn" style="flex:2; background:black; color:white; padding:14px; border-radius:12px; font-weight:bold; border:none; cursor:pointer;">تأكيد الطلب</button>
-                        <button onclick="document.getElementById('paymentModal').remove()" style="flex:1; background:#f3f4f6; color:#666; padding:14px; border-radius:12px; font-weight:bold; border:none; cursor:pointer;">إلغاء</button>
+                        <button onclick="submitOrder()" id="subBtn" style="flex:2; background:black; color:white; padding:15px; border-radius:15px; font-weight:bold; border:none; cursor:pointer;">إرسال الطلب</button>
+                        <button onclick="document.getElementById('orderModal').remove()" style="flex:1; background:#eee; color:#333; padding:15px; border-radius:15px; border:none; cursor:pointer;">إلغاء</button>
                     </div>
                 </div>
             </div>
         `;
 
-        document.body.insertAdjacentHTML('beforeend', paymentHtml);
+        document.body.insertAdjacentHTML('beforeend', orderModalHtml);
+    }
 
-        // معالج زر التأكيد
-        document.getElementById('confirmPayBtn').onclick = async function() {
-            if (!window.selectedPay) return alert("يرجى اختيار طريقة الدفع يا أميرة");
-            
-            const payMethod = window.selectedPay;
-            const finalShipping = window.shipping;
-            document.getElementById('paymentModal').remove();
+    // وظائف النافذة
+    window.updateOrderTotal = function(type) {
+        const bank = document.getElementById('bankDetails');
+        const finalP = document.getElementById('finalPrice');
+        const lT = document.getElementById('labelT');
+        const lC = document.getElementById('labelC');
+        
+        if(type === 'transfer') {
+            window.finalShip = 15;
+            window.payType = "تحويل بنكي";
+            bank.style.display = 'block';
+            lT.style.borderColor = 'black';
+            lC.style.borderColor = '#eee';
+        } else {
+            window.finalShip = 30;
+            window.payType = "الدفع عند الاستلام";
+            bank.style.display = 'none';
+            lC.style.borderColor = 'black';
+            lT.style.borderColor = '#eee';
+        }
+        finalP.innerText = total + window.finalShip;
+    }
 
-            const customerName = prompt("الاسم الكريم:");
-            if (!customerName) return;
-
-            let customerPhone = prompt("رقم الجوال (05XXXXXXXX):");
-            if (!customerPhone || !/^05\d{8}$/.test(customerPhone)) {
-                alert("يرجى التأكد من رقم الجوال.");
-                return;
+    window.getGPS = function() {
+        const btn = document.getElementById('gpsBtn');
+        btn.innerText = "جاري تحديد الموقع...";
+        navigator.geolocation.getCurrentPosition(
+            (pos) => {
+                document.getElementById('gpsLink').value = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
+                btn.innerText = "✅ تم تحديد الموقع بنجاح";
+                btn.style.background = "#dcfce7";
+            },
+            () => { 
+                alert("تعذر الوصول للموقع، يرجى تفعيل الـ GPS"); 
+                btn.innerText = "📍 مشاركة الموقع GPS (اختياري)";
             }
+        );
+    }
 
-            let googleMapsLink = "لم يتم مشاركة الموقع";
-            if (confirm("هل تسمحين بمشاركة موقعك (GPS)؟")) {
-                try {
-                    const pos = await new Promise((res, rej) => {
-                        navigator.geolocation.getCurrentPosition(res, rej, { timeout: 8000 });
-                    });
-                    googleMapsLink = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-                } catch (err) { alert("تعذر الحصول على الموقع."); }
-            }
+    window.submitOrder = function() {
+        const name = document.getElementById('custName').value;
+        const phone = document.getElementById('custPhone').value;
+        const loc = document.getElementById('custLoc').value;
+        const notes = document.getElementById('custNotes').value;
+        const gps = document.getElementById('gpsLink').value;
 
-            const customerLoc = prompt("موقع التوصيل (المدينة والحي):") || "غير محدد";
-            const generalNotes = prompt("ملاحظات إضافية؟") || "لا يوجد";
+        if (!name || !phone || !window.payType) {
+            return alert("يا أميرة، الزبونة نسيت تعبي بياناتها أو تختار الدفع!");
+        }
+        
+        if (!/^05\d{8}$/.test(phone)) {
+            return alert("رقم الجوال لازم يبدأ بـ 05 ويكون 10 أرقام.");
+        }
 
-            const itemsText = cart.map(i => `- ${i.name} (مقاس: ${i.size}) العدد: ${i.qty}${i.note ? ` [تعديل: ${i.note}]` : ''}`).join("\n");
+        document.getElementById('subBtn').innerText = "جاري الإرسال...";
+        document.getElementById('subBtn').disabled = true;
 
-            const orderData = {
-                name: customerName,
-                phone: customerPhone,
-                location: customerLoc,
-                gps: googleMapsLink,
-                items: itemsText,
-                total: total + finalShipping,
-                notes: generalNotes,
-                payment: payMethod + " (توصيل: " + finalShipping + " ريال)"
-            };
+        const itemsText = cart.map(i => `- ${i.name} (${i.size}) العدد:${i.qty}`).join("\n");
 
-            fetch(scriptURL, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(orderData)
-            }).then(() => {
-                alert("شكراً لكِ يا " + customerName + "!\nتم إرسال طلبك بنجاح وسنتواصل معكِ قريباً.");
-                cart = [];
-                updateUI();
-                if(document.getElementById('cartDrawer').style.display === 'flex') toggleCartDrawer();
-            }).catch(err => {
-                alert("حدث خطأ، يرجى المحاولة مرة أخرى.");
-            });
+        const orderData = {
+            name: name,
+            phone: phone,
+            location: loc,
+            gps: gps,
+            items: itemsText,
+            total: total + window.finalShip,
+            notes: notes,
+            payment: window.payType + " (توصيل: " + window.finalShip + ")"
         };
+
+        fetch(scriptURL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(orderData)
+        }).then(() => {
+            alert("تم إرسال طلبك بنجاح يا " + name);
+            document.getElementById('orderModal').remove();
+            cart = [];
+            updateUI();
+            if(document.getElementById('cartDrawer').style.display === 'flex') toggleCartDrawer();
+        }).catch(err => alert("خطأ في الإرسال"));
     }
 </script>
 </body>
