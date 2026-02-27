@@ -15,24 +15,27 @@
         .opt-btn { border: 1px solid #e5e7eb; transition: all 0.2s; background: white; cursor: pointer; text-align: center; border-radius: 12px; }
         .opt-btn.selected { border: 2px solid #800020 !important; background-color: #fff5f5 !important; font-weight: bold; }
         #productDetailModal, #cartDrawer, #orderModal { display: none; }
-        .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 10000; display: none; align-items: center; justify-content: center; p: 4; }
+        .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 10000; display: none; align-items: center; justify-content: center; padding: 15px; }
     </style>
 </head>
 <body>
 
     <header class="bg-white text-gray-800 p-4 sticky top-0 z-50 text-center shadow-sm border-b">
-        <h1 class="text-xl font-bold">GHAMRA | غمرة</h1>
+        <h1 class="text-xl font-bold uppercase tracking-widest">GHAMRA | غمرة</h1>
     </header>
 
     <main class="max-w-md mx-auto px-4" id="products">
         <h2 class="category-title text-xl font-bold text-right my-6">عبايات كولكشن العيد</h2>
         <div class="grid grid-cols-2 gap-4">
             <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-2 cursor-pointer" 
-                 onclick="openProductDetail('عباية دانتيل رسمية', 500, 379, ['5.png'], 'عباية فاخرة بتصميم عصري.')">
+                 onclick="openProductDetail('عباية دانتيل رسمية', 500, 379, '5.png', 'عباية فاخرة بتصميم عصري.')">
                 <img src="5.png" class="w-full h-56 object-cover rounded-xl">
                 <div class="p-3 text-right">
                     <h3 class="text-xs font-bold text-gray-700 truncate">عباية دانتيل رسمية</h3>
-                    <span class="text-red-600 font-bold text-sm">379 ريال</span>
+                    <div class="flex gap-2 items-center mt-1 justify-end">
+                        <span class="text-red-600 font-bold text-sm">379 ريال</span>
+                        <span class="text-gray-400 line-through text-[10px]">500 ريال</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -43,7 +46,10 @@
             <div onclick="closeProductDetail()" class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center cursor-pointer mb-4"><i class="fas fa-arrow-right"></i></div>
             <img id="mainImg" src="" class="w-full h-80 object-cover rounded-2xl mb-6">
             <h2 id="modalTitle" class="text-2xl font-bold mb-2"></h2>
-            <div id="modalPrice" class="text-red-600 text-2xl font-bold mb-6"></div>
+            <div id="modalPriceContainer" class="flex gap-3 justify-end items-center mb-6">
+                <span id="modalPrice" class="text-red-600 text-2xl font-bold"></span>
+                <span id="modalOldPrice" class="text-gray-400 line-through text-sm"></span>
+            </div>
 
             <label class="block font-bold mb-2 text-sm">المقاس *</label>
             <div id="sizeOptions" class="flex flex-wrap gap-2 justify-end mb-6"></div>
@@ -57,7 +63,7 @@
             <label class="block font-bold mb-2 text-sm">نوع الطرحة *</label>
             <div class="grid grid-cols-2 gap-2 mb-6">
                 <button onclick="selectOption('veil', 'سادة', this, 0)" class="opt-btn py-3 text-xs">سادة (مجاناً)</button>
-                <button onclick="selectOption('veil', 'مطرزة', this, 20)" class="opt-btn py-3 text-xs">مطرزة (+20 ريال)</button>
+                <button onclick="selectOption('veil', 'مطرزة', this, 19)" class="opt-btn py-3 text-xs">مطرزة (+19 ريال)</button>
             </div>
 
             <textarea id="itemNote" placeholder="ملاحظاتك الإضافية..." class="w-full border p-3 rounded-xl bg-gray-50 h-20 mb-6 text-sm text-right outline-none"></textarea>
@@ -65,7 +71,20 @@
         </div>
     </div>
 
-    <div class="fixed bottom-0 left-0 right-0 bg-white p-4 shadow-2xl border-t z-50 max-w-md mx-auto rounded-t-3xl">
+    <div class="fixed bottom-24 left-6 bg-[#800020] text-white w-14 h-14 rounded-full flex items-center justify-center shadow-xl z-[1000] cursor-pointer" onclick="toggleCartDrawer()">
+        <i class="fas fa-shopping-bag"></i>
+        <span id="cartCount" class="absolute -top-1 -right-1 bg-red-600 text-[10px] rounded-full px-2">0</span>
+    </div>
+
+    <div id="cartDrawer" class="fixed bottom-[100px] left-4 right-4 bg-white z-[2000] rounded-2xl shadow-2xl flex flex-col border border-gray-100 max-h-[50vh]">
+        <div class="p-4 border-b flex justify-between items-center font-bold bg-gray-50 rounded-t-2xl">
+            <span>سلة المشتريات</span>
+            <button onclick="toggleCartDrawer()" class="text-xl">×</button>
+        </div>
+        <div id="cartItemsList" class="p-4 overflow-y-auto text-right text-xs flex-1"></div>
+    </div>
+
+    <div class="fixed bottom-0 left-0 right-0 bg-white p-4 shadow-2xl border-t z-50 max-w-md mx-auto rounded-t-3xl text-right">
         <div class="flex justify-between mb-4 font-bold px-2">
             <span class="text-gray-400 text-sm">مجموع المنتجات:</span>
             <span><span id="total-price">0</span> ريال</span>
@@ -73,13 +92,14 @@
         <button onclick="showOrderForm()" class="w-full bg-black text-white py-4 rounded-xl font-bold text-lg">إتمام الطلب</button>
     </div>
 
-    <div id="orderModal" class="modal-bg flex">
-        <div class="bg-white p-6 rounded-3xl w-full max-w-sm text-right mx-4 shadow-2xl">
-            <h3 class="font-bold mb-4 border-b pb-2 text-lg">الاسم الكريم وبيانات التوصيل 🚚</h3>
+    <div id="orderModal" class="modal-bg">
+        <div class="bg-white p-6 rounded-3xl w-full max-w-sm text-right shadow-2xl overflow-y-auto max-h-[90vh]">
+            <h3 class="font-bold mb-4 border-b pb-2 text-lg">تأكيد بيانات الطلب 🧾</h3>
             
             <div class="space-y-3 mb-4">
-                <input type="text" id="custName" placeholder="الاسم الكامل" class="w-full p-3 border rounded-xl outline-none text-right">
+                <input type="text" id="custName" placeholder="اسم العميل" class="w-full p-3 border rounded-xl outline-none">
                 <input type="tel" id="custPhone" placeholder="رقم الجوال" class="w-full p-3 border rounded-xl outline-none text-right">
+                <input type="text" id="custCity" placeholder="المدينة / الحي" class="w-full p-3 border rounded-xl outline-none">
                 
                 <label class="block font-bold text-xs mt-2">منطقة التوصيل *</label>
                 <select id="deliverySelect" onchange="calcFinal()" class="w-full p-3 border rounded-xl bg-gray-50 outline-none text-sm">
@@ -87,38 +107,51 @@
                     <option value="35">داخل الرياض (35 ريال)</option>
                     <option value="50">خارج الرياض - شحن (50 ريال)</option>
                 </select>
+
+                <select id="paymentStatus" class="w-full p-3 border rounded-xl bg-gray-50 outline-none text-sm">
+                    <option value="بانتظار التحويل">الدفع: تحويل بنكي</option>
+                    <option value="عند الاستلام">الدفع: عند الاستلام</option>
+                </select>
             </div>
 
-            <div class="bg-gray-50 p-4 rounded-2xl mb-4 text-sm">
-                <div class="flex justify-between mb-1"><span>سعر العبايات:</span><span><span id="res-items">0</span> ريال</span></div>
-                <div class="flex justify-between mb-1"><span>سعر التوصيل:</span><span><span id="res-ship">0</span> ريال</span></div>
-                <div class="flex justify-between font-bold border-t pt-2 mt-2"><span>الإجمالي:</span><span class="text-[#800020]"><span id="res-total">0</span> ريال</span></div>
+            <div class="bg-gray-50 p-4 rounded-2xl mb-4 text-sm space-y-1">
+                <div class="flex justify-between"><span>قيمة العبايات:</span><span><span id="res-items">0</span> ريال</span></div>
+                <div class="flex justify-between"><span>قيمة التوصيل:</span><span><span id="res-ship">0</span> ريال</span></div>
+                <div class="flex justify-between font-bold border-t pt-2 mt-2"><span>الإجمالي النهائي:</span><span class="text-[#800020]"><span id="res-total">0</span> ريال</span></div>
             </div>
 
             <button id="gpsBtn" onclick="getGPS()" class="w-full p-3 border-dashed border-2 border-red-200 text-red-600 rounded-xl mb-4 text-xs font-bold">📍 مشاركة الموقع GPS (إجباري)</button>
             <input type="hidden" id="gpsLink" value="">
 
             <button onclick="finalSubmit()" id="subBtn" class="w-full bg-gray-300 text-white p-4 rounded-xl font-bold cursor-not-allowed" disabled>إرسال الطلب الآن</button>
-            <button onclick="document.getElementById('orderModal').style.display='none'" class="w-full text-gray-400 mt-4 text-sm">إلغاء</button>
+            <button onclick="document.getElementById('orderModal').style.display='none'" class="w-full text-gray-400 mt-4 text-sm text-center block w-full">إلغاء</button>
         </div>
     </div>
 
     <script>
-        let cart = [], total = 0, currentBasePrice = 0, extras = 0;
+        let cart = [], total = 0, currentBasePrice = 0, extras = 0, currentImg = '';
         let selected = { size: '', wrap: '', veil: '' };
         const scriptURL = "https://script.google.com/macros/s/AKfycbxjMePwUNHZW_X7FjtrnapR6JOMtUuoxXlDLHky54n3pNh2muwBcfB_LPn9eV71g4K7/exec";
 
-        function openProductDetail(name, old, price, imgs, desc) {
-            currentBasePrice = price; extras = 0;
+        function openProductDetail(name, old, price, img, desc) {
+            currentBasePrice = price; extras = 0; currentImg = img;
             document.getElementById('modalTitle').innerText = name;
             document.getElementById('modalPrice').innerText = price + " ريال";
-            document.getElementById('mainImg').src = imgs[0];
+            document.getElementById('modalOldPrice').innerText = old + " ريال";
+            document.getElementById('mainImg').src = img;
             document.getElementById('sizeOptions').innerHTML = [48, 50, 52, 54, 56, 58, 60].map(s => `<button onclick="selectOption('size', '${s}', this)" class="opt-btn w-10 h-10 text-xs">${s}</button>`).join('');
             document.getElementById('productDetailModal').style.display = 'block';
             
             document.getElementById('modalAddBtn').onclick = () => {
                 if(!selected.size || !selected.wrap || !selected.veil) return alert("يرجى اختيار المقاس والقفلة والطرحة");
-                cart.push({ name, price: currentBasePrice + extras, size: selected.size, details: `${selected.wrap}, طرحة ${selected.veil}`, note: document.getElementById('itemNote').value });
+                cart.push({ 
+                    name: name, 
+                    price: currentBasePrice + extras, 
+                    img: currentImg,
+                    size: selected.size, 
+                    details: `${selected.wrap}, طرحة ${selected.veil}`, 
+                    note: document.getElementById('itemNote').value 
+                });
                 updateMainUI(); closeProductDetail();
             };
         }
@@ -138,6 +171,23 @@
         function updateMainUI() {
             total = cart.reduce((s, i) => s + i.price, 0);
             document.getElementById('total-price').innerText = total;
+            document.getElementById('cartCount').innerText = cart.length;
+        }
+
+        function toggleCartDrawer() {
+            const d = document.getElementById('cartDrawer');
+            d.style.display = (d.style.display === 'flex') ? 'none' : 'flex';
+            document.getElementById('cartItemsList').innerHTML = cart.map((i, idx) => `
+                <div class="flex items-center gap-3 mb-3 border-b pb-2">
+                    <img src="${i.img}" class="w-12 h-12 object-cover rounded-lg">
+                    <div class="flex-1">
+                        <div class="font-bold text-gray-800">${i.name}</div>
+                        <div class="text-[10px] text-gray-500">مقاس ${i.size} | ${i.details}</div>
+                        <div class="font-bold text-[#800020] mt-1">${i.price} ريال</div>
+                    </div>
+                    <button onclick="cart.splice(${idx},1);updateMainUI();toggleCartDrawer();toggleCartDrawer()" class="text-red-500 text-lg">×</button>
+                </div>
+            `).join('') || "السلة فارغة";
         }
 
         function showOrderForm() {
@@ -159,7 +209,7 @@
             btn.innerText = "جاري تحديد الموقع... ⏳";
             navigator.geolocation.getCurrentPosition((pos) => {
                 document.getElementById('gpsLink').value = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
-                btn.innerText = "✅ تم تحديد الموقع";
+                btn.innerText = "✅ تم تحديد الموقع بنجاح";
                 btn.className = "w-full p-3 bg-green-50 text-green-600 rounded-xl mb-4 text-xs font-bold";
                 sub.disabled = false;
                 sub.classList.replace('bg-gray-300', 'bg-black');
@@ -169,26 +219,32 @@
         async function finalSubmit() {
             const name = document.getElementById('custName').value;
             const phone = document.getElementById('custPhone').value;
+            const city = document.getElementById('custCity').value;
             const ship = document.getElementById('deliverySelect').value;
-            if(!name || !phone || ship === "0") return alert("يرجى إكمال جميع البيانات");
+            
+            if(!name || !phone || !city || ship === "0") return alert("يرجى إكمال جميع البيانات واختيار منطقة التوصيل");
 
             const sub = document.getElementById('subBtn');
-            sub.innerText = "جاري إرسال الطلب...";
+            sub.innerText = "جاري إرسال طلبك... 📤";
             sub.disabled = true;
 
-            const data = {
-                name: name,
-                phone: phone,
-                gps: document.getElementById('gpsLink').value,
-                items: cart.map(i => `${i.name} (${i.size}) [${i.details}]`).join(' | '),
-                total: total + parseInt(ship)
+            const orderData = {
+                orderID: "#GH-" + Math.floor(1000 + Math.random() * 9000),
+                customerName: name,
+                customerPhone: phone,
+                date: new Date().toLocaleString('ar-SA'),
+                orderContent: cart.map(i => `${i.name} (مقاس:${i.size}) [${i.details}] ملاحظة: ${i.note}`).join(' | '),
+                grandTotal: total + parseInt(ship),
+                location: city,
+                paymentStatus: document.getElementById('paymentStatus').value,
+                gps: document.getElementById('gpsLink').value
             };
 
             try {
-                await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(data) });
-                alert("شكراً لكِ! تم إرسال الطلب بنجاح.");
+                await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(orderData) });
+                alert("شكراً لكِ! تم إرسال طلبك بنجاح.");
                 location.reload();
-            } catch (e) { alert("خطأ في الإرسال"); sub.disabled = false; }
+            } catch (e) { alert("حدث خطأ، يرجى المحاولة مرة أخرى."); sub.disabled = false; }
         }
     </script>
 </body>
