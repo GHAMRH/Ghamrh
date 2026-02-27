@@ -13,31 +13,32 @@
         .hero-banner img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
         .opt-btn { border: 1px solid #e5e7eb; transition: all 0.2s; background: white; cursor: pointer; text-align: center; border-radius: 12px; }
         .opt-btn.selected { border: 2px solid #800020 !important; background-color: #fff5f5 !important; font-weight: bold; }
-        #productDetailModal, #cartDrawer, #orderModal { display: none; }
+        #productDetailModal, #orderModal { display: none; }
         .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 10000; display: none; align-items: center; justify-content: center; padding: 15px; }
     </style>
 </head>
 <body>
 
     <header class="bg-white text-gray-800 p-4 sticky top-0 z-50 text-center shadow-sm border-b">
-        <h1 class="text-xl font-bold uppercase">GHAMRA | غمرة</h1>
+        <h1 class="text-xl font-bold uppercase tracking-widest text-[#800020]">GHAMRA | غمرة</h1>
     </header>
 
     <div class="hero-banner">
         <img src="4.png" alt="كولكشن غمرة">
         <div class="absolute inset-0 flex flex-col justify-center items-center text-white text-center">
-            <h2 class="text-xl font-bold mb-1 tracking-widest uppercase">New Collection</h2>
+            <h2 class="text-2xl font-bold mb-1 tracking-widest uppercase">New Collection</h2>
             <p class="text-sm opacity-90 mb-6">عبايات غمرة كولكشن العيد..</p>
+            <a href="#products" class="border border-white px-8 py-2 rounded-full text-sm">عرض الكل</a>
         </div>
     </div>
 
     <main class="max-w-md mx-auto px-4" id="products">
-        <h2 class="border-right-4 border-[#800020] pr-3 my-6 font-bold text-xl text-right">عبايات كولكشن العيد</h2>
-        <div class="grid grid-cols-2 gap-4">
+        <h2 class="border-r-4 border-[#800020] pr-3 my-6 font-bold text-xl text-right">عبايات كولكشن العيد</h2>
+        <div class="grid grid-cols-2 gap-4 text-right">
             <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-2 cursor-pointer" 
                  onclick="openProductDetail('عباية دانتيل رسمية', 500, 379, '5.png')">
                 <img src="5.png" class="w-full h-56 object-cover rounded-xl">
-                <div class="p-3 text-right">
+                <div class="p-3">
                     <h3 class="text-xs font-bold text-gray-700 truncate">عباية دانتيل رسمية</h3>
                     <div class="flex gap-2 items-center mt-1 justify-end">
                         <span class="text-red-600 font-bold text-sm">379 ريال</span>
@@ -72,7 +73,6 @@
                 <button onclick="selectOption('veil', 'سادة', this, 0)" class="opt-btn py-3 text-xs">سادة (مجاناً)</button>
                 <button onclick="selectOption('veil', 'مطرزة', this, 19)" class="opt-btn py-3 text-xs">مطرزة (+19 ريال)</button>
             </div>
-
             <button id="modalAddBtn" class="w-full bg-black text-white py-4 rounded-2xl font-bold">إضافة للسلة</button>
         </div>
     </div>
@@ -87,32 +87,31 @@
 
     <div id="orderModal" class="modal-bg">
         <div class="bg-white p-6 rounded-3xl w-full max-w-sm text-right shadow-2xl overflow-y-auto max-h-[90vh]">
-            <h3 class="font-bold mb-4 border-b pb-2 text-lg">الاسم الكريم وبيانات الطلب 🧾</h3>
+            <h3 class="font-bold mb-4 border-b pb-2 text-lg text-[#800020]">بيانات التوصيل 🚚</h3>
             
             <div class="space-y-3 mb-4">
-                <input type="text" id="custName" placeholder="اسم العميل" class="w-full p-3 border rounded-xl outline-none">
+                <input type="text" id="custName" placeholder="الاسم الكريم" class="w-full p-3 border rounded-xl outline-none">
                 <input type="tel" id="custPhone" placeholder="رقم الجوال (05xxxxxxxx)" class="w-full p-3 border rounded-xl outline-none text-right">
                 
-                <label class="block font-bold text-xs mt-2">طريقة الدفع *</label>
+                <label class="block font-bold text-xs mt-2 text-gray-600">طريقة الدفع *</label>
                 <select id="paymentStatus" onchange="calcFinal()" class="w-full p-3 border rounded-xl bg-gray-50 outline-none text-sm font-bold">
-                    <option value="تحويل بنكي">تحويل بنكي (توصيل 15 ريال)</option>
-                    <option value="عند الاستلام">الدفع عند الاستلام (توصيل 30 ريال)</option>
+                    <option value="تحويل بنكي">تحويل بنكي (التوصيل 15 ريال)</option>
+                    <option value="عند الاستلام">الدفع عند الاستلام (التوصيل 30 ريال)</option>
                 </select>
 
-                <div id="bankDetails" class="bg-blue-50 p-3 rounded-xl text-[11px] text-blue-700 leading-relaxed">
-                    <b>بيانات التحويل:</b><br>
-                    مصرف الراجحي: 1234567890123456<br>
-                    باسم: مؤسسة غمرة التجارية<br>
-                    يرجى إرسال صورة التحويل لخدمة العملاء.
+                <div id="bankDetails" class="bg-red-50 p-3 rounded-xl text-[11px] text-red-800 leading-relaxed border border-red-100">
+                    <b>بيانات التحويل البنكي:</b><br>
+                    الراجحي: 1234567890123456<br>
+                    باسم: متجر غمرة للعبايات
                 </div>
 
-                <textarea id="custNote" placeholder="ملاحظات العميل (مثل: الموقع بدقة، وقت التوصيل..)" class="w-full border p-3 rounded-xl bg-gray-50 h-20 text-sm outline-none"></textarea>
+                <textarea id="custNote" placeholder="ملاحظات العميل..." class="w-full border p-3 rounded-xl bg-gray-50 h-20 text-sm outline-none"></textarea>
             </div>
 
-            <div class="bg-gray-50 p-4 rounded-2xl mb-4 text-sm">
-                <div class="flex justify-between"><span>المنتجات:</span><span><span id="res-items">0</span> ريال</span></div>
-                <div class="flex justify-between"><span>التوصيل:</span><span><span id="res-ship">0</span> ريال</span></div>
-                <div class="flex justify-between font-bold border-t pt-2 mt-2"><span>الإجمالي:</span><span class="text-[#800020]"><span id="res-total">0</span> ريال</span></div>
+            <div class="bg-gray-50 p-4 rounded-2xl mb-4 text-sm space-y-1 border">
+                <div class="flex justify-between text-gray-500"><span>المنتجات:</span><span><span id="res-items">0</span> ريال</span></div>
+                <div class="flex justify-between text-gray-500"><span>التوصيل:</span><span><span id="res-ship">0</span> ريال</span></div>
+                <div class="flex justify-between font-bold border-t pt-2 mt-2 text-lg"><span>الإجمالي:</span><span class="text-[#800020]"><span id="res-total">0</span> ريال</span></div>
             </div>
 
             <button id="gpsBtn" onclick="getGPS()" class="w-full p-3 border-dashed border-2 border-red-200 text-red-600 rounded-xl mb-4 text-xs font-bold">📍 مشاركة الموقع GPS (إجباري)</button>
@@ -124,12 +123,12 @@
     </div>
 
     <script>
-        let cart = [], total = 0, currentBasePrice = 0, extras = 0, currentImg = '';
+        let cart = [], total = 0, currentBasePrice = 0, extras = 0;
         let selected = { size: '', wrap: '', veil: '' };
         const scriptURL = "https://script.google.com/macros/s/AKfycbxjMePwUNHZW_X7FjtrnapR6JOMtUuoxXlDLHky54n3pNh2muwBcfB_LPn9eV71g4K7/exec";
 
         function openProductDetail(name, old, price, img) {
-            currentBasePrice = price; extras = 0; currentImg = img;
+            currentBasePrice = price; extras = 0;
             document.getElementById('modalTitle').innerText = name;
             document.getElementById('modalPrice').innerText = price + " ريال";
             document.getElementById('modalOldPrice').innerText = old + " ريال";
@@ -138,7 +137,7 @@
             document.getElementById('productDetailModal').style.display = 'block';
             
             document.getElementById('modalAddBtn').onclick = () => {
-                if(!selected.size || !selected.wrap || !selected.veil) return alert("اختاري المقاس والخيارات أولاً");
+                if(!selected.size || !selected.wrap || !selected.veil) return alert("يرجى اختيار المقاس والخيارات أولاً");
                 cart.push({ name, price: currentBasePrice + extras, size: selected.size, details: `${selected.wrap}, طرحة ${selected.veil}` });
                 updateMainUI(); closeProductDetail();
             };
@@ -177,8 +176,10 @@
             navigator.geolocation.getCurrentPosition((pos) => {
                 document.getElementById('gpsLink').value = `https://www.google.com/maps?q=${pos.coords.latitude},${pos.coords.longitude}`;
                 document.getElementById('gpsBtn').innerText = "✅ تم تحديد الموقع";
+                document.getElementById('gpsBtn').className = "w-full p-3 bg-green-50 text-green-600 rounded-xl mb-4 text-xs font-bold";
                 document.getElementById('subBtn').disabled = false;
                 document.getElementById('subBtn').classList.replace('bg-gray-300', 'bg-black');
+                document.getElementById('subBtn').classList.remove('cursor-not-allowed');
             }, () => alert("فضلاً فعلي الـ GPS"));
         }
 
@@ -187,8 +188,8 @@
             const phone = document.getElementById('custPhone').value;
             const phoneRegex = /^05\d{8}$/;
 
-            if(!name) return alert("يرجى كتابة اسم العميل");
-            if(!phoneRegex.test(phone)) return alert("رقم الجوال يجب أن يبدأ بـ 05 ويتكون من 10 أرقام");
+            if(!name) return alert("يرجى كتابة الاسم");
+            if(!phoneRegex.test(phone)) return alert("رقم الجوال غير صحيح! يجب أن يبدأ بـ 05 ويتكون من 10 أرقام.");
 
             const orderID = "GH-" + Math.floor(1000 + Math.random() * 9000);
             const sub = document.getElementById('subBtn');
@@ -209,9 +210,10 @@
 
             try {
                 await fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(orderData) });
-                alert(`تم إتمام الطلب بنجاح!\n\nرقم الطلبية: ${orderID}\n\nسوف تتواصل معكم إدارة غمرة قريباً.`);
+                // الرسالة التي طلبتيها مع رقم الطلب
+                alert(`تم إتمام الطلب بنجاح!\nرقم طلبيتك هو: ${orderID}\nسوف تتواصل معكم إدارة غمرة.`);
                 location.reload();
-            } catch (e) { alert("حدث خطأ في الإرسال"); sub.disabled = false; }
+            } catch (e) { alert("خطأ في الإرسال"); sub.disabled = false; }
         }
     </script>
 </body>
