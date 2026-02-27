@@ -276,6 +276,7 @@
                     note: noteVal, // حفظ الملاحظة في مصفوفة السلة
                     img: imgs[0] 
                 });
+                document.querySelectorAll('input[name="veil"], input[name="wrap"]').forEach(input => { input.checked = false; });
                 updateUI(); closeProductDetail(); toggleCartDrawer();
             };
         }
