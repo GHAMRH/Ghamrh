@@ -358,30 +358,45 @@
     btn.innerText = "جاري الحفظ في النظام..."; 
     btn.disabled = true;
 
-    const orderData = {
+   const orderData = {
         name: name,
         phone: phone,
-        // 2. هنا تظهر تعديلات العبايات (تقصير، تضييق) بجانب كل عباية في العمود 5
-        items: cart.map(i => `${i.name} (مقاس:${i.size}) [تعديل: ${i.note || 'لا يوجد'}]`).join(' | '),
+        // تجميع كل تفاصيل المنتج (المقاس، الطرحة، الأزرار، والتعديلات) لترسل للعمود رقم 5
+        items: cart.map(i => {
+            let details = `${i.name} (مقاس:${i.size})`;
+            if(i.veil) details += ` [طرحة:${i.veil}]`;
+            if(i.buttons) details += ` [أزرار:${i.buttons}]`;
+            if(i.note) details += ` [تعديل:${i.note}]`;
+            return details;
+        }).join(' | '),
         
         total: document.getElementById('finalWithShip').innerText,
-        location: "تم تحديد الموقع عبر الخريطة", 
+        location: "تم تحديد الموقع عبر الخريطة",
         payment: selectedPay,
         
-        // 3. هنا نرسل ملاحظة التوصيل فقط لتظهر في العمود 9 لوحدها
-        notes: deliveryNote || "لا يوجد ملاحظات توصيل", 
+        // سحب ملاحظة التوصيل العامة للعمود رقم 9
+        notes: document.getElementById('orderNote').value || "لا يوجد ملاحظات توصيل",
         
         gps: document.getElementById('gpsLink').value
     };
-
-    try {
+try {
         await fetch(scriptURL, { 
             method: 'POST', 
             mode: 'no-cors', 
             body: JSON.stringify(orderData) 
         });
 
-        alert(`أهلاً يا ${name}، تم إتمام طلبك بنجاح!\nسنتواصل معكِ قريباً لتأكيد الطلب.`);
+        // رسالة النجاح التي تظهر للعميلة
+        alert(`أهلاً يا ${name}، تم إتمام طلبك بنجاح!\n\nاضغطي "موافق" لتأكيد طلبك عبر الواتساب ومتابعة حالة الشحن ✨`);
+
+        // تجهيز رابط الواتساب ليرسل لكِ التفاصيل فوراً
+        const whatsappNumber = "966502743396"; // رقمك المسجل في البيانات
+        const message = `أهلاً متجر غمرة، أتممت طلبي بنجاح:\n👤 الاسم: ${name}\n💰 الإجمالي: ${orderData.total}\n📦 الطلب: ${orderData.items}\n📍 الموقع: ${orderData.gps}`;
+        const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+
+        // فتح الواتساب في نافذة جديدة
+        window.open(whatsappURL, '_blank');
+
         location.reload(); 
         
     } catch (e) { 
