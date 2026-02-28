@@ -316,27 +316,29 @@
             updateFinalPriceDisplay();
         }
 
-        function renderCart() {
-            const list = document.getElementById('cartItemsList');
-            if (cart.length === 0) {
-                list.innerHTML = '<div class="text-center py-10 text-gray-400">السلة فارغة</div>';
-                return;
-            }
-            list.innerHTML = cart.map((i, idx) => `
-                <div class="flex items-center gap-3 mb-4 border-b pb-3">
-                    <img src="${i.img}" class="w-14 h-20 object-cover rounded-lg shadow-sm">
-                    <div class="flex-1 text-right">
-                        <div class="font-bold text-xs">${i.name}</div>
-                        <div class="text-[10px] text-gray-400">مقاس ${i.size} | ${i.details}</div>
-                        ${i.note ? `<div class="text-[9px] text-amber-600 italic">ملاحظة: ${i.note}</div>` : ''}
-                        <div class="text-[#800020] font-bold mt-1 text-xs">${i.price} ريال</div>
-                    </div>
-                    <button onclick="cart.splice(${idx},1);updateUI();renderCart()" class="text-gray-300 hover:text-red-500 transition px-2">
-                        <i class="fas fa-trash-alt text-sm"></i>
-                    </button>
+function renderCart() {
+    const list = document.getElementById('cartItemsList');
+    if (cart.length === 0) {
+        list.innerHTML = '<div class="text-center py-10 text-gray-400">السلة فارغة</div>';
+        return;
+    }
+    list.innerHTML = cart.map((i, idx) => `
+        <div class="flex items-center gap-3 mb-4 border-b pb-3">
+            <img src="${i.img}" class="w-14 h-20 object-cover rounded-lg shadow-sm">
+            <div class="flex-1 text-right">
+                <div class="font-bold text-xs">${i.name}</div>
+                <div class="text-[10px] text-gray-400">
+                    مقاس ${i.size} | ${i.wrap} | ${i.veil}
                 </div>
-            `).join('');
-        }
+                ${i.note ? `<div class="text-[9px] text-amber-600 italic">ملاحظة: ${i.note}</div>` : ''}
+                <div class="text-[#800020] font-bold mt-1 text-xs">${i.price} ريال</div>
+            </div>
+            <button onclick="cart.splice(${idx},1);updateUI();renderCart()" class="text-gray-300 hover:text-red-500 transition px-2">
+                <i class="fas fa-trash-alt text-sm"></i>
+            </button>
+        </div>
+    `).join('');
+}
 
         function openOrderModal() {
             if(!cart.length) return alert("السلة فارغة!");
