@@ -377,7 +377,7 @@
         items: cart.map(i => {
             let details = `${i.name} (مقاس:${i.size})`;
             if(i.veil) details += ` [طرحة:${i.veil}]`;
-            if(i.buttons) details += ` [أزرار:${i.buttons}]`;
+            if(i.wrap) details += ` [القفلة: ${i.wrap}]`;
             if(i.note) details += ` [تعديل:${i.note}]`;
             return details;
         }).join(' | '),
