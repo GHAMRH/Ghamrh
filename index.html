@@ -125,7 +125,7 @@
             <label class="block font-bold mb-2 text-sm">نوع القفلة *</label>
             <div class="flex gap-2 mb-6">
                 <button onclick="selectOption('wrap', 'بدون أزرار', this)" class="opt-btn flex-1 py-3 rounded-xl text-xs">بدون أزرار</button>
-                <button onclick="selectOption('wrap', '(طقطق) أزرار', this)" class="opt-btn flex-1 py-3 rounded-xl text-xs">(طقطق) أزرار</button>
+                <button onclick="selectOption('wrap', 'أزرار (طقطق)', this)" class="opt-btn flex-1 py-3 rounded-xl text-xs">(طقطق) أزرار</button>
             </div>
 
             <label class="block font-bold mb-2 text-sm">الطرحة *</label>
@@ -272,7 +272,8 @@
                     price: currentBasePrice + veilExtra, 
                     oldPrice: currentOldPrice,
                     size: selectedOptions.size, 
-                    details: `${selectedOptions.wrap}, ${selectedOptions.veil}`, 
+                    wrap: selectedOptions.wrap, 
+                    veil: selectedOptions.veil,
                     note: noteVal, // حفظ الملاحظة في مصفوفة السلة
                     img: imgs[0] 
                 });
