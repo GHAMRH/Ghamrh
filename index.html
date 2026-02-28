@@ -124,8 +124,8 @@
 
             <label class="block font-bold mb-2 text-sm">نوع القفلة *</label>
             <div class="flex gap-2 mb-6">
-                <button onclick="selectOption('wrap', 'بدون أزرار', this)" class="opt-btn flex-1 py-3 rounded-xl text-xs">بدون أزرار</button>
-                <button onclick="selectOption('wrap', 'أزرار (طقطق)', this)" class="opt-btn flex-1 py-3 rounded-xl text-xs">(طقطق) أزرار</button>
+                <button onclick="selectOption('buttons', 'بدون أزرار', this)" class="opt-btn flex-1 py-3 rounded-xl text-xs">بدون أزرار</button>
+                <button onclick="selectOption('buttons', 'أزرار (طقطق)', this)" class="opt-btn flex-1 py-3 rounded-xl text-xs">(طقطق) أزرار</button>
             </div>
 
             <label class="block font-bold mb-2 text-sm">الطرحة *</label>
@@ -225,7 +225,7 @@
         let cart = [], total = 0, oldTotal = 0, currentBasePrice = 0, currentOldPrice = 0, veilExtra = 0;
         let selectedPay = 'تحويل'; // القيمة الافتراضية
         let shipCost = 15;
-        let selectedOptions = { size: '', wrap: '', veil: '' };
+        let selectedOptions = { size: '', buttons: '', veil: '' };
         
         const scriptURL = "https://script.google.com/macros/s/AKfycbxSGU4A0jI6vgKoOiVLv-yHAfn89V9dEC3TXCTXapvCZDC0Nl7arUDOrde9uBz52CNb/exec";
 
@@ -280,12 +280,12 @@
                     price: currentBasePrice + veilExtra, 
                     oldPrice: currentOldPrice,
                     size: selectedOptions.size, 
-                    wrap: selectedOptions.wrap, 
+                    buttons: selectedOptions.buttons, 
                     veil: selectedOptions.veil,
                     note: noteVal, // حفظ الملاحظة في مصفوفة السلة
                     img: imgs[0] 
                 });
-                document.querySelectorAll('input[name="veil"], input[name="wrap"]').forEach(input => { input.checked = false; });
+                document.querySelectorAll('input[name="veil"], input[name="buttons"]').forEach(input => { input.checked = false; });
                 updateUI(); closeProductDetail(); toggleCartDrawer();
             };
         }
@@ -328,7 +328,7 @@ function renderCart() {
             <div class="flex-1 text-right">
                 <div class="font-bold text-xs">${i.name}</div>
                 <div class="text-[10px] text-gray-400">
-                    مقاس ${i.size} | ${i.wrap} | ${i.veil}
+                    مقاس ${i.size} | ${i.buttons} | ${i.veil}
                 </div>
                 ${i.note ? `<div class="text-[9px] text-amber-600 italic">ملاحظة: ${i.note}</div>` : ''}
                 <div class="text-[#800020] font-bold mt-1 text-xs">${i.price} ريال</div>
@@ -379,7 +379,7 @@ function renderCart() {
         items: cart.map(i => {
             let details = `${i.name} (مقاس:${i.size})`;
             if(i.veil) details += ` [طرحة:${i.veil}]`;
-            if(i.wrap) details += ` [القفلة: ${i.wrap}]`;
+            if(i.buttons) details += ` [الأزرار: ${i.buttons}]`;
             if(i.note) details += ` [تعديل:${i.note}]`;
             return details;
         }).join(' | '),
