@@ -216,6 +216,12 @@
     </div>
 
     <script>
+        function clearSelectionStyles() {
+    // تصفية ألوان الأزرار لكي لا تبقى "معلقة" من المنتج السابق
+    document.querySelectorAll('.opt-btn').forEach(btn => {
+        btn.classList.remove('selected');
+    });
+}
         let cart = [], total = 0, oldTotal = 0, currentBasePrice = 0, currentOldPrice = 0, veilExtra = 0;
         let selectedPay = 'تحويل'; // القيمة الافتراضية
         let shipCost = 15;
