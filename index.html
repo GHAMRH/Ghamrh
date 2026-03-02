@@ -265,8 +265,7 @@
             document.getElementById('productDescription').innerText = desc;
             document.getElementById('itemNote').value = ""; // تصفير الملاحظة عند الفتح
             
-document.getElementById('modalSlider').innerHTML = imgs.map(i => `<img src="${i}" class="w-full h-full flex-shrink-0 snap-center object-contain bg-white">`).join('');            document.getElementById('sizeOptions').innerHTML = [50, 52, 54, 56, 58, 60].map(s => `<button onclick="selectOption('size', '${s}', this)" class="opt-btn w-10 h-10 rounded-full text-xs">${s}</button>`).join('');
-            document.getElementById('productDetailModal').style.display = 'block';
+document.getElementById('modalSlider').innerHTML = imgs.map(i => `<img src="${i}" class="w-full h-full flex-shrink-0 snap-center object-fill">`).join('');            document.getElementById('productDetailModal').style.display = 'block';
             document.body.style.overflow = 'hidden';
             
             document.getElementById('modalAddBtn').onclick = () => {
