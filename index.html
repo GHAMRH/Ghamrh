@@ -181,25 +181,23 @@
             <input type="text" id="orderNote" placeholder="ملاحظات على التوصيل" class="w-full p-3 border rounded-xl mb-3 outline-none text-right focus:border-[#800020]">
             <label class="block font-bold text-xs mb-3">اختر طريقة الدفع والتوصيل *</label>
             <div class="space-y-2 mb-4">
-                <div onclick="setPayMethod('تحويل', 15)" id="payTransfer" class="pay-option active">
+                <div onclick="setPayMethod('تحويل', 25)" id="payTransfer" class="pay-option active">
                     <div class="flex items-center gap-3">
                         <div class="dot"></div>
                         <span class="text-sm font-bold">تحويل بنكي (توصيل 25 ريال)</span>
                     </div>
                 </div>
                 
-                <div onclick="setPayMethod('استلام', 39)" id="payCod" class="pay-option">
+                <div onclick="setPayMethod('استلام', 33)" id="payCod" class="pay-option">
                     <div class="flex items-center gap-3">
                         <div class="dot"></div>
-                        <span class="text-sm font-bold">دفع عند الاستلام (توصيل 30 ريال)</span>
+                        <span class="text-sm font-bold">دفع عند الاستلام (توصيل 33 ريال)</span>
                     </div>
                 </div>
             </div>
 
             <div id="bankDetailsBox" class="bg-amber-50 p-4 rounded-xl text-[11px] mb-4 text-amber-900 border border-amber-100 leading-relaxed">
-                <div class="font-bold mb-1 text-xs text-[#800020]">بيانات التحويل البنكي:</div>
-                بنك الراجحي: <span class="font-bold select-all">1234567890123456</span><br>
-                باسم: مؤسسة غمرة للعبايات<br>
+
                 <span class="text-red-700">* يرجى إرفاق صورة التحويل عند تواصلنا معكِ.</span>
             </div>
 
