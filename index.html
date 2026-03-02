@@ -257,7 +257,7 @@
             clearSelectionStyles(); // <-- أضيفي هذا السطر هنا لتصفية الألوان
             
             currentBasePrice = price; currentOldPrice = old; veilExtra = 0;
-            selectedOptions = { size: '', wrap: '', veil: '' };
+            selectedOptions = { size: '', buttons: '', veil: '' };
             document.getElementById('modalTitle').innerText = name;
             document.getElementById('modalPrice').innerText = price + " ريال";
             document.getElementById('modalOldPrice').innerText = old + " ريال";
@@ -270,7 +270,7 @@
             document.body.style.overflow = 'hidden';
             
             document.getElementById('modalAddBtn').onclick = () => {
-                if(!selectedOptions.size || !selectedOptions.wrap || !selectedOptions.veil) return alert("يرجى اختيار كل الخيارات");
+                if(!selectedOptions.size || !selectedOptions.buttons || !selectedOptions.veil) return alert("يرجى اختيار كل الخيارات");
                 
                 // حفظ الملاحظة من التكست أريا
                 const noteVal = document.getElementById('itemNote').value;
