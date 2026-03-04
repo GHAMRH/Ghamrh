@@ -236,7 +236,7 @@ function applyCoupon() {
             let pairs = Math.floor(cart.length / 2);
             discountAmount = pairs * 50;
             
-            msg.innerText = `✅ تم تطبيق كود غمرة بنجاح، خصم ${discountAmount} ريال`;
+            msg.innerText = `✅ تم تطبيق الكود  ${discountAmount} ريال`;
             msg.className = "text-[10px] mt-1 text-green-600 font-bold text-right";
         } else {
             discountAmount = 0;
@@ -416,15 +416,23 @@ function renderCart() {
             updateFinalPriceDisplay();
         }
 
-        function getGPS() {
-            navigator.geolocation.getCurrentPosition(p => {
-                document.getElementById('gpsLink').value = `https://www.google.com/maps?q=${p.coords.latitude},${p.coords.longitude}`;
-                document.getElementById('gpsBtn').innerText = "✅ تم تحديد الموقع بنجاح";
-                document.getElementById('gpsBtn').className = "w-full p-3 bg-green-50 text-green-600 rounded-xl mb-4 text-xs font-bold border-none";
-                document.getElementById('subBtn').disabled = false;
-                document.getElementById('subBtn').className = "w-full bg-[#800020] text-white p-4 rounded-xl font-bold cursor-pointer";
-            }, () => alert("فضلاً فعلي الـ GPS للمتابعة وتحديد عنوانك بدقة"));
-        }
+     function getGPS() {
+    navigator.geolocation.getCurrentPosition(p => {
+        // الرابط المحدث لضمان فتح الموقع بدقة على الخريطة
+        const lat = p.coords.latitude;
+        const lng = p.coords.longitude;
+        document.getElementById('gpsLink').value = `https://www.google.com/maps?q=${lat},${lng}`;
+        
+        document.getElementById('gpsBtn').innerText = "✅ تم تحديد الموقع بنجاح";
+        document.getElementById('gpsBtn').className = "w-full p-3 bg-green-50 text-green-600 rounded-xl mb-4 text-xs font-bold border-none";
+        
+        // تفعيل زر تأكيد الطلب
+        document.getElementById('subBtn').disabled = false;
+        document.getElementById('subBtn').className = "w-full bg-[#800020] text-white p-4 rounded-xl font-bold cursor-pointer";
+    }, () => {
+        alert("فضلاً فعلي الـ GPS للمتابعة وتحديد عنوانك بدقة");
+    });
+}
 
        async function submitToSheet() {
     const name = document.getElementById('custName').value;
