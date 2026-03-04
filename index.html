@@ -301,10 +301,12 @@ function applyCoupon() {
             document.getElementById('itemNote').value = ""; // تصفير الملاحظة عند الفتح
             
 document.getElementById('modalSlider').innerHTML = imgs.map(i => `
-    <div class="relative w-full h-full flex-shrink-0 snap-center overflow-hidden flex items-center justify-center bg-gray-100">
-        <img src="${i}" class="absolute inset-0 w-full h-full object-cover blur-xl opacity-30 scale-110">
+    <div class="relative w-full h-full flex-shrink-0 snap-center overflow-hidden flex items-center justify-center bg-black">
+        <img src="${i}" class="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-125">
         
-        <img src="${i}" class="relative z-10 max-h-full max-w-full object-contain shadow-2xl">
+        <div class="absolute inset-0 bg-black/60"></div>
+        
+        <img src="${i}" class="relative z-10 max-h-full max-w-full object-contain shadow-2xl rounded-sm">
     </div>
 `).join('');
 // 2. إرجاع المقاسات (السطر الذي كان مفقوداً عندك)
@@ -351,24 +353,39 @@ document.getElementById('modalSlider').innerHTML = imgs.map(i => `
             document.body.style.overflow = 'auto';
         }
         
-       function updateUI() {
-    // هنا أضفنا ناقص مبلغ الخصم لكي يتحدث السعر
-    total = cart.reduce((s, i) => s + i.price, 0) - discountAmount;
-    
-    // لضمان عدم ظهور سعر بالسالب (احتياطاً)
-    if (total < 0) total = 0;
 
-    oldTotal = cart.reduce((s, i) => s + i.oldPrice, 0);
+function updateUI() {
+    // 1. فحص الأهلية للخصم: إذا نقصت السلة عن عبايتين، يلغى الخصم تلقائياً
+    if (cart.length < 2) {
+        discountAmount = 0;
+        const msg = document.getElementById('couponMessage');
+        if (msg) msg.innerText = ""; // مسح رسالة "تم تطبيق الخصم" لأن الشرط لم يعد مستوفى
+    }
+
+    // 2. حساب المجموع الفعلي للمنتجات في السلة
+    let itemsTotal = cart.reduce((s, i) => s + i.price, 0);
+    let itemsOldTotal = cart.reduce((s, i) => s + i.oldPrice, 0);
+
+    // 3. حساب المجموع النهائي بعد طرح الخصم
+    let finalTotal = itemsTotal - discountAmount;
     
+    // منع ظهور أرقام سالبة (احتياطاً)
+    if (finalTotal < 0) finalTotal = 0;
+
+    // تحديث المتغيرات العامة (Global Variables)
+    total = finalTotal; 
+    oldTotal = itemsOldTotal;
+
+    // 4. تحديث النصوص في واجهة المستخدم (HTML)
     document.getElementById('total-price').innerText = total;
     document.getElementById('total-old-price').innerText = oldTotal;
     document.getElementById('inner-total').innerText = total;
     document.getElementById('inner-old-total').innerText = oldTotal;
     document.getElementById('cartCount').innerText = cart.length;
     
+    // تحديث السعر النهائي مع التوصيل في نافذة إتمام الطلب
     updateFinalPriceDisplay();
 }
-
 function renderCart() {
     const list = document.getElementById('cartItemsList');
     if (cart.length === 0) {
