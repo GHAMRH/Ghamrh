@@ -126,6 +126,8 @@
             <div class="flex gap-2 mb-6">
                 <button onclick="selectOption('buttons', 'بدون أزرار', this)" class="opt-btn flex-1 py-3 rounded-xl text-xs">بدون أزرار</button>
                 <button onclick="selectOption('buttons', 'أزرار (طقطق)', this)" class="opt-btn flex-1 py-3 rounded-xl text-xs">(طقطق) أزرار</button>
+                <button onclick="selectOption('buttons', 'خياطة', this)" class="opt-btn flex-1 py-3 rounded-xl text-xs">خياطة</button>
+
             </div>
 
             <label class="block font-bold mb-2 text-sm">الطرحة *</label>
@@ -236,7 +238,7 @@ function applyCoupon() {
             let pairs = Math.floor(cart.length / 2);
             discountAmount = pairs * 50;
             
-            msg.innerText = `✅ تم تطبيق الكود  ${discountAmount} ريال`;
+            msg.innerText = `✅ تم تطبيق الكود`;
             msg.className = "text-[10px] mt-1 text-green-600 font-bold text-right";
         } else {
             discountAmount = 0;
