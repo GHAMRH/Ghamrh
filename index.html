@@ -312,7 +312,7 @@ document.getElementById('modalSlider').innerHTML = imgs.map(i => `
     </div>
 `).join('');
 
-            slider.scrollTo({ left: 0 });
+       
 // 2. إرجاع المقاسات (السطر الذي كان مفقوداً عندك)
     document.getElementById('sizeOptions').innerHTML = [50, 51,52,53, 54,55, 56,57, 58,59, 60].map(s => `
         <button onclick="selectOption('size', '${s}', this)" class="opt-btn w-10 h-10 rounded-full text-xs">${s}</button>
