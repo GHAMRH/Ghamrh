@@ -426,8 +426,7 @@ function renderCart() {
         // الرابط المحدث لضمان فتح الموقع بدقة على الخريطة
         const lat = p.coords.latitude;
         const lng = p.coords.longitude;
-        document.getElementById('gpsLink').value = `https://www.google.com/maps?q=${lat},${lng}`;
-        
+document.getElementById('gpsLink').value = `https://www.google.com/maps?q=${lat},${lng}`;        
         document.getElementById('gpsBtn').innerText = "✅ تم تحديد الموقع بنجاح";
         document.getElementById('gpsBtn').className = "w-full p-3 bg-green-50 text-green-600 rounded-xl mb-4 text-xs font-bold border-none";
         
