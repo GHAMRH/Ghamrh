@@ -411,7 +411,6 @@ function renderCart() {
     }
     
     list.innerHTML = cart.map((i, idx) => {
-        // حساب السعر بعد خصم الـ 10% إذا كان الكود مفعل
         let discountedPrice = (percentDiscount > 0) ? Math.round(i.price * 0.9) : i.price;
 
         return `
@@ -424,9 +423,8 @@ function renderCart() {
                 </div>
                 ${i.note ? `<div class="text-[9px] text-amber-600 italic">ملاحظة: ${i.note}</div>` : ''}
                 
-                <div class="mt-1 flex gap-2 justify-end items-center">
-                    ${percentDiscount > 0 ? `<span class="text-gray-400 line-through text-[10px]">${i.price} ريال</span>` : ''}
-                    
+                <div class="mt-1 flex flex-col items-start justify-end text-right">
+                    ${i.oldPrice ? `<span class="text-gray-400 line-through text-[10px] block">${i.oldPrice} ريال</span>` : ''}
                     <span class="text-[#800020] font-bold text-xs">${discountedPrice} ريال</span>
                 </div>
             </div>
