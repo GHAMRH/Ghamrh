@@ -225,33 +225,38 @@
     </div>
 
     <script>
-        let discountAmount = 0; // متغير لحفظ قيمة الخصم
+let discountAmount = 0; // خصم المبلغ الثابت (مثل 50 ريال)
+let percentDiscount = 0; // نسبة الخصم (10%)
 
 function applyCoupon() {
-    // 1. نحول المدخلات لحروف صغيرة لنتجنب مشاكل الـ Capital و الـ Small
     const code = document.getElementById('couponCode').value.trim().toLowerCase();
     const msg = document.getElementById('couponMessage');
     
-    // 2. نقارنها بالكود المطلوب بحروف صغيرة (eid26)
+    // إعادة تعيين الخصومات عند إدخال كود جديد
+    discountAmount = 0;
+    percentDiscount = 0;
+
     if (code === 'eid26') {
         if (cart.length >= 2) {
-            // حساب الخصم: 50 ريال لكل عبايتين
             let pairs = Math.floor(cart.length / 2);
             discountAmount = pairs * 50;
-            
-            msg.innerText = `✅ تم تطبيق الكود`;
+            msg.innerText = `✅ تم تطبيق خصم العيد (50 ريال لكل عبايتين)`;
             msg.className = "text-[10px] mt-1 text-green-600 font-bold text-right";
         } else {
-            discountAmount = 0;
-            msg.innerText = "❌ أضيفي عباءة أخرى لتفعيل الخصم";
+            msg.innerText = "❌ أضيفي عباءة أخرى لتفعيل هذا الخصم";
             msg.className = "text-[10px] mt-1 text-red-500 text-right";
         }
-    } else {
-        // في حال كان الكود فارغاً أو خاطئاً
-        discountAmount = 0;
+    } 
+    else if (code === 'GH10') {
+        percentDiscount = 0.10; // 10%
+        msg.innerText = "✅ تم تطبيق خصم 10% على المجموع";
+        msg.className = "text-[10px] mt-1 text-green-600 font-bold text-right";
+    }
+    else {
         msg.innerText = "❌ كود غير صحيح";
         msg.className = "text-[10px] mt-1 text-red-500 text-right";
     }
+    
     updateUI();
 }
         function clearSelectionStyles() {
@@ -360,28 +365,35 @@ document.getElementById('modalSlider').innerHTML = imgs.map(i => `
         
 
 function updateUI() {
-    // 1. فحص الأهلية للخصم: إذا نقصت السلة عن عبايتين، يلغى الخصم تلقائياً
-    if (cart.length < 2) {
-        discountAmount = 0;
-        const msg = document.getElementById('couponMessage');
-        if (msg) msg.innerText = ""; // مسح رسالة "تم تطبيق الخصم" لأن الشرط لم يعد مستوفى
-    }
-
-    // 2. حساب المجموع الفعلي للمنتجات في السلة
+    // 1. حساب المجموع الفعلي للمنتجات في السلة (السعر الحالي والسابق)
     let itemsTotal = cart.reduce((s, i) => s + i.price, 0);
     let itemsOldTotal = cart.reduce((s, i) => s + i.oldPrice, 0);
 
-    // 3. حساب المجموع النهائي بعد طرح الخصم
-    let finalTotal = itemsTotal - discountAmount;
+    // 2. فحص أهلية خصم العبايتين (eid26): إذا نقصت السلة عن 2، يصفر المبلغ الثابت
+    if (cart.length < 2 && discountAmount > 0) {
+        discountAmount = 0;
+        const msg = document.getElementById('couponMessage');
+        if (msg) msg.innerText = "أضيفي عباءة أخرى لتفعيل الخصم";
+    }
+
+    // 3. حساب خصم النسبة المئوية (إذا كان كود 10% مفعل)
+    // ملاحظة: percentDiscount يجب أن تكون معرفة عالمياً (مثلاً 0.10 للـ 10%)
+    let calculatedPercentDiscount = 0;
+    if (typeof percentDiscount !== 'undefined' && percentDiscount > 0) {
+        calculatedPercentDiscount = itemsTotal * percentDiscount;
+    }
+
+    // 4. حساب المجموع النهائي بعد طرح (الخصم الثابت + خصم النسبة)
+    let finalTotal = itemsTotal - discountAmount - calculatedPercentDiscount;
     
-    // منع ظهور أرقام سالبة (احتياطاً)
+    // منع ظهور أرقام سالبة
     if (finalTotal < 0) finalTotal = 0;
 
-    // تحديث المتغيرات العامة (Global Variables)
-    total = finalTotal; 
+    // تحديث المتغيرات العامة (مع تقريب السعر لأقرب رقم صحيح)
+    total = Math.round(finalTotal); 
     oldTotal = itemsOldTotal;
 
-    // 4. تحديث النصوص في واجهة المستخدم (HTML)
+    // 5. تحديث النصوص في واجهة المستخدم (HTML)
     document.getElementById('total-price').innerText = total;
     document.getElementById('total-old-price').innerText = oldTotal;
     document.getElementById('inner-total').innerText = total;
