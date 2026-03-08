@@ -79,10 +79,10 @@
                 </div>
             </div>
               <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 p-2 cursor-pointer transition active:scale-95" 
-                 onclick="openProductDetail('غنج', 399, 292, ['(2).jpg','abya2.jpg','abya222.jpg','abya2222.jpg','abya22222222.jpg'], 'عباية دانتيل للمناسبات، تتميز بتفاصيل في اليد و الأسفل بتصميم رسمي وأنيق يناسب المناسبات؛ بقصة (نص كلوش) انسيابية، من قماش إنترنت كوري درجة أولى المعروف بسواده الفاحم وثباته العالي، وهو قماش عملي جداً ومقاوم للتجعد بحيث لا يتكرمش بسهولة ويتحمل الغسيل المتكرر مع الحفاظ على رونقه، كما أنها مزينة بدانتيل عالي الجودة في اليد و الأسفل مشغول بدقة متناهية ويتميز بمتانته بحيث لا يترهل مع مرور الوقت، وتأتي بقفلة طقطق (أزرار كبس) مخفية.')">
+                 onclick="openProductDetail('ورد', 399, 292, ['(2).jpg','abya2.jpg','abya222.jpg','abya2222.jpg','abya22222222.jpg'], 'عباية دانتيل للمناسبات، تتميز بتفاصيل في اليد و الأسفل بتصميم رسمي وأنيق يناسب المناسبات؛ بقصة (نص كلوش) انسيابية، من قماش إنترنت كوري درجة أولى المعروف بسواده الفاحم وثباته العالي، وهو قماش عملي جداً ومقاوم للتجعد بحيث لا يتكرمش بسهولة ويتحمل الغسيل المتكرر مع الحفاظ على رونقه، كما أنها مزينة بدانتيل عالي الجودة في اليد و الأسفل مشغول بدقة متناهية ويتميز بمتانته بحيث لا يترهل مع مرور الوقت، وتأتي بقفلة طقطق (أزرار كبس) مخفية.')">
                 <img src="(2).jpg" class="w-full h-56 object-cover rounded-xl">
                 <div class="p-3 text-right">
-                    <h3 class="text-xs font-bold text-gray-700 truncate">غَنَج</h3>
+                    <h3 class="text-xs font-bold text-gray-700 truncate">ورد</h3>
                     <div class="flex gap-2 items-center mt-1 justify-end">
                         <span class="text-[#800020] font-bold text-sm">292 ريال</span>
                         <span class="text-gray-400 line-through text-[10px]">399 ريال</span>
@@ -225,18 +225,16 @@
     </div>
 
     <script>
-let discountAmount = 0; // خصم المبلغ الثابت (مثل 50 ريال)
-let percentDiscount = 0; // نسبة الخصم (10%)
-
 function applyCoupon() {
+    // .toLowerCase() تحول أي حرف تكتبه العميلة إلى حروف صغيرة للمقارنة بشكل صحيح
     const code = document.getElementById('couponCode').value.trim().toLowerCase();
     const msg = document.getElementById('couponMessage');
     
-    // إعادة تعيين الخصومات عند إدخال كود جديد
     discountAmount = 0;
     percentDiscount = 0;
 
-    if (code === 'eid26') {
+    // تأكدي من كتابة الكود هنا بالحروف الصغيرة دائماً
+    if (code === 'eid26') { 
         if (cart.length >= 2) {
             let pairs = Math.floor(cart.length / 2);
             discountAmount = pairs * 50;
@@ -247,8 +245,8 @@ function applyCoupon() {
             msg.className = "text-[10px] mt-1 text-red-500 text-right";
         }
     } 
-    else if (code === 'GH10') {
-        percentDiscount = 0.10; // 10%
+    else if (code === 'gh10') { // حولناها لصغير هنا عشان تطابق المدخلات
+        percentDiscount = 0.10; 
         msg.innerText = "✅ تم تطبيق خصم 10% على المجموع";
         msg.className = "text-[10px] mt-1 text-green-600 font-bold text-right";
     }
