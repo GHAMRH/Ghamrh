@@ -225,6 +225,8 @@
     </div>
 
     <script>
+        let discountAmount = 0; 
+let percentDiscount = 0;
 function applyCoupon() {
     // .toLowerCase() تحول أي حرف تكتبه العميلة إلى حروف صغيرة للمقارنة بشكل صحيح
     const code = document.getElementById('couponCode').value.trim().toLowerCase();
